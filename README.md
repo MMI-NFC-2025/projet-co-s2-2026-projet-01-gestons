@@ -9,7 +9,7 @@
 - [ ] URL de connexion au back office : https://gestons.girardin-tarby.fr/_/
 - [ ] Identifiant de connexion au backoffice :
 - [ ] Mot de passe de connexion au backoffice :
-- [ ] URL de la maquette FIGMA :
+- [ ] URL de la maquette FIGMA : https://www.figma.com/design/W09SPVvexpwi3LBygpVf8Z/Projet-maquette-S2?node-id=8-4&t=yFoLX0THEN0Lu2C1-1
 - [ ] Description du projet :
 
 ## 🚀 Équipe
