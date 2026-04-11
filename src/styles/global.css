@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: "Sugo Pro Display";
+    src: url("../assets/fonts/SugoProDisplayTrial-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Gill Sans Ultra Bold Condensed";
+    src: url("../assets/fonts/GillSansUltraBoldCondensed.woff2") format("woff2");
+    font-weight: 900;
+    font-display: swap;
+}
+
+
+@theme {
+    --font-sugo: "Sugo Pro Display", sans-serif;
+    --font-gill: "Gill Sans Ultra Bold Condensed", sans-serif;
+}
