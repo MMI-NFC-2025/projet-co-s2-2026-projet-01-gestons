@@ -19,5 +19,3 @@
 | Étudiant 1   | Sacha Martin |
 | Étudiant 2   | Valentin Deroo |
 | Étudiant 3   | Mathéo Girardin Tarby |
-
-Test
