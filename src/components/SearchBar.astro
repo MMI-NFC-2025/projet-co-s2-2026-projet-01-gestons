@@ -1,0 +1,29 @@
+---
+import loupe from "../assets/icon/loupe.svg";
+
+interface Props {
+    placeholder?: string;
+    class?: string;
+}
+
+const {
+    placeholder = "Rechercher un mot / une expression...",
+    class: className = "",
+} = Astro.props;
+---
+
+<div class:list={["relative w-full", className]}>
+    <input
+        type="search"
+        placeholder={placeholder}
+        class="w-full rounded-full border-2 border-(--pink) bg-white px-5 py-2.5 pr-12 text-sm font-lato text-gray-700 placeholder:text-gray-400 focus:outline-none focus:border-(--light-green) transition-colors"
+        aria-label="Rechercher un mot ou une expression"
+    />
+    <button
+        type="button"
+        class="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:opacity-75 transition-opacity"
+        aria-label="Lancer la recherche"
+    >
+        <img src={loupe.src} alt="" width="22" height="22" aria-hidden="true" />
+    </button>
+</div>

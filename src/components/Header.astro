@@ -1,0 +1,30 @@
+---
+import logo from "../assets/icon/logo_dark-green.svg";
+import breakheader from "../assets/icon/breakheader.svg";
+import SearchBar from "./SearchBar.astro";
+---
+
+<header class="w-full">
+    <div class="bg-(--light-green) px-4 pt-6 pb-5">
+        <div class="max-w-lg mx-auto flex flex-col gap-4">
+            <div class="flex justify-center">
+                <a href="/" aria-label="Accueil Gestons!">
+                    <img
+                        src={logo.src}
+                        alt="Gestons!"
+                        width="220"
+                        height="45"
+                        class="h-12 w-auto"
+                    />
+                </a>
+            </div>
+            <SearchBar />
+        </div>
+    </div>
+    <img
+        src={breakheader.src}
+        alt=""
+        aria-hidden="true"
+        class="w-full block -mt-px"
+    />
+</header>
