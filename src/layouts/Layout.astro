@@ -1,14 +1,15 @@
 ---
-import "@fontsource/lato";
+import "../styles/global.css";
 import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
 const { title = "Gestons" } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
@@ -32,8 +33,9 @@ const { title = "Gestons" } = Astro.props;
 		/>
 		<link rel="manifest" href="/site.webmanifest" />
 	</head>
-	<body>
-		<main>
+	<body class="bg-white min-h-screen font-lato">
+		<Header />
+		<main class="w-full max-w-lg mx-auto">
 			<slot />
 		</main>
 		<Footer />

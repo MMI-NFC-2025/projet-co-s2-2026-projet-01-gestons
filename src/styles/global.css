@@ -1,3 +1,4 @@
+@import "@fontsource/lato";
 @import "tailwindcss";
 
 @font-face {
@@ -20,7 +21,7 @@
     --font-gill: "Gill Sans Ultra Bold Condensed", sans-serif;
     --font-lato: "Lato", sans-serif;
 
-    --black: oklch(0 0 0); 
+    --black: oklch(0 0 0);
     /* #000000; */
     --green: oklch(0.3861 0.059 188.42);
     /* #134e4a */
@@ -30,4 +31,10 @@
     /* #fca5a5 */
     --white: oklch(0.9851 0 0);
     /* #fafafa */
+}
+
+@layer base {
+    h2 {
+        color: var(--green);
+    }
 }

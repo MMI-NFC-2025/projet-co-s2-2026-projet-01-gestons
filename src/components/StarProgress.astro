@@ -1,0 +1,31 @@
+---
+interface Props {
+    total?: number;
+    filled?: number;
+}
+
+const { total = 5, filled = 3 } = Astro.props;
+---
+
+<div
+    class="flex items-center justify-around w-full rounded-full bg-(--green) px-6 py-3 border-(--pink) border-4"
+    role="progressbar"
+    aria-label={`${filled} étoile${filled > 1 ? "s" : ""} sur ${total}`}
+    aria-valuenow={filled}
+    aria-valuemin={0}
+    aria-valuemax={total}
+>
+    {
+        Array.from({ length: total }, (_, i) => (
+            <span
+                class:list={[
+                    "text-3xl leading-none select-none",
+                    i < filled ? "text-white" : "text-white/25",
+                ]}
+                aria-hidden="true"
+            >
+                ★
+            </span>
+        ))
+    }
+</div>

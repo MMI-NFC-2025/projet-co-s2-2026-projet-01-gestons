@@ -19,3 +19,10 @@
 | Étudiant 1   | Sacha Martin |
 | Étudiant 2   | Valentin Deroo |
 | Étudiant 3   | Mathéo Girardin Tarby |
+
+
+<Layout>
+	<h1 class="font-sugo text-4xl">Test Sugo</h1>
+	<p class="font-gill text-4xl">Test Gill Sans</p>
+	<p class="font-lato text-4xl">Test Lato</p>
+</Layout>

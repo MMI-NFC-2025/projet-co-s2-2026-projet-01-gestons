@@ -1,13 +1,25 @@
 ---
-import Welcome from "../components/Welcome.astro";
 import Layout from "../layouts/Layout.astro";
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import StreakDisplay from "../components/StreakDisplay.astro";
+import WordOfDay from "../components/WordOfDay.astro";
+import GamesSection from "../components/GamesSection.astro";
 ---
 
-<Layout>
-	<h1 class="font-sugo text-4xl">Test Sugo</h1>
-	<p class="font-gill text-4xl">Test Gill Sans</p>
-	<p class="font-lato text-4xl">Test Lato</p>
+<Layout title="Gestons! - Accueil">
+    <div class="flex flex-col gap-8 py-6">
+        <StreakDisplay
+            streakDays={5}
+            level={4}
+            starsProgress={3}
+            totalStars={5}
+        />
+
+        <hr class="border-(--light-green) mx-4" />
+
+        <WordOfDay word="Bonjour" wordId="bonjour" />
+
+        <hr class="border-(--light-green) mx-4" />
+
+        <GamesSection />
+    </div>
 </Layout>
