@@ -5,8 +5,6 @@ import fusee from "../assets/icon/fusee.svg";
 import { Image } from "astro:assets";
 
 import logo from "../assets/icon/logo_dark-green.svg";
-import breakheader from "../assets/icon/breakheader.svg";
-import breakfooter from "../assets/icon/breakfooter.svg";
 import breakpage from "../assets/icon/breakpage.svg";
 import star from "../assets/icon/star.svg";
 import rectangle from "../assets/icon/rectangle.svg";
@@ -126,7 +124,7 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
                         aria-hidden="true"
                         class="w-8 h-8 flex-shrink-0"
                     />
-                    <span class="font-lato text-sm font-semibold text-gray-800"
+                    <span class="font-lato text-sm text-gray-800"
                         >Plusieurs modes</span
                     >
                 </div>
@@ -140,7 +138,7 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
                         aria-hidden="true"
                         class="w-8 h-8 flex-shrink-0"
                     />
-                    <span class="font-lato text-sm font-semibold text-gray-800"
+                    <span class="font-lato text-sm text-gray-800"
                         >Facile à comprendre</span
                     >
                 </div>
@@ -154,7 +152,7 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
                         aria-hidden="true"
                         class="w-8 h-8 flex-shrink-0"
                     />
-                    <span class="font-lato text-sm font-semibold text-gray-800"
+                    <span class="font-lato text-sm text-gray-800"
                         >Multijoueurs</span
                     >
                 </div>
@@ -169,19 +167,11 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
             class="max-w-lg mx-auto flex flex-col items-center gap-6 relative z-10"
         >
             <span
-                class="absolute top-4 left-6 text-3xl text-(--light-green) select-none"
+                class="absolute top-18 right-4 text-6xl text-(--pink) select-none"
                 aria-hidden="true">✦</span
             >
             <span
-                class="absolute top-10 right-4 text-xl text-(--light-green) select-none"
-                aria-hidden="true">✦</span
-            >
-            <span
-                class="absolute bottom-8 left-10 text-2xl text-(--light-green) select-none"
-                aria-hidden="true">✦</span
-            >
-            <span
-                class="absolute bottom-4 right-8 text-4xl text-(--light-green) select-none"
+                class="absolute bottom-35 left-6 text-6xl text-(--pink) select-none"
                 aria-hidden="true">✦</span
             >
 
@@ -199,12 +189,12 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
 
     <section class="px-5 py-10">
         <div class="max-w-lg mx-auto flex flex-col gap-8">
-            <h2 class="font-gill font-black text-3xl text-(--green) uppercase">
+            <h2 class="font-sugo font-black text-4xl text-(--green)">
                 Nos Fonctionnalités
             </h2>
 
             <div class="flex flex-col gap-8">
-                <div class="flex items-start gap-4">
+                <div class="flex items-center gap-4">
                     <img
                         src={loupe.src}
                         alt=""
@@ -212,10 +202,10 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
                         class="w-12 h-12 flex-shrink-0 mt-1"
                     />
                     <p class="font-lato text-sm text-gray-800 leading-relaxed">
-                        Notre moteur de recherche conçu pour traduire les
-                        expressions du français parlé vers le français signé
-                        vous permettra de trouver instantanément la bonne
-                        expression en LSF&nbsp;!
+                        <span class="font-bold">Notre moteur de recherche</span> conçu pour traduire
+                        les expressions du français parlé vers le français signé vous
+                        permettra de trouver instantanément la bonne expression en
+                        LSF&nbsp;!
                     </p>
                 </div>
 
@@ -226,7 +216,7 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
                     class="w-62 h-auto mx-auto"
                 />
 
-                <div class="flex items-start gap-4">
+                <div class="flex items-center gap-4">
                     <p class="font-lato text-sm text-gray-800 leading-relaxed">
                         Apprends la LSF autrement grâce à des <strong
                             >mini-jeux courts, intuitifs et motivants</strong
@@ -250,7 +240,7 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
                     class="w-62 h-auto mx-auto"
                 />
 
-                <div class="flex items-start gap-4">
+                <div class="flex items-center gap-4">
                     <img
                         src={battle1.src}
                         alt=""
