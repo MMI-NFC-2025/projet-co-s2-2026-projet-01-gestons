@@ -1,0 +1,111 @@
+---
+import Layout from "../layouts/Layout.astro";
+import BackButton from "../components/BackButton.astro";
+---
+
+<Layout title="Mentions Légales — Gestons!">
+    <section class="px-5 pt-6 pb-16 flex flex-col gap-8">
+        <div class="flex justify-end">
+            <BackButton href="/" label="<- Retour" />
+        </div>
+
+        <div>
+            <h1
+                class="font-gill font-black text-5xl text-(--green) leading-tight"
+            >
+                Mentions Légales - Gestons
+            </h1>
+            <p class="font-lato text-sm mt-2">
+                (Conformité LCEN – Loi n°2004-575 du 21 juin 2004)
+            </p>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <h2 class="font-gill font-black text-2xl text-(--light-green)">
+                Éditeur
+            </h2>
+            <p class="font-lato font-bold text-sm ml-6">
+                L'application Gestons est éditée par :
+            </p>
+            <div class="font-lato text-sm leading-relaxed ml-6">
+                <p><strong>Équipe</strong> : Gestons</p>
+                <p>
+                    <strong>Adresse</strong> : 4 Pl. Lucien Tharradin, Montbéliard
+                    25200
+                </p>
+                <p>
+                    <strong>E-mail de contact</strong> : <a
+                        href="mailto:contact@gestons.fr"
+                        class="underline underline-offset-2"
+                        >contact@gestons.fr</a
+                    >
+                </p>
+                <p>
+                    <strong>Responsable de la publication</strong> : Valentin Deroo,
+                    Mathéo Girardin Tarby et Sacha Martin
+                </p>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <h2 class="font-gill font-black text-2xl text-(--light-green)">
+                Hébergement
+            </h2>
+            <p class="font-lato font-bold text-sm ml-6">
+                L'application est hébergée par :
+            </p>
+            <div class="font-lato text-sm leading-relaxed ml-6">
+                <p>Infomaniak Network SA</p>
+                <p>Rue Eugène-Marziano 25, 1227 Genève, Suisse</p>
+                <p>Téléphone : +41 22 820 35 44</p>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <h2 class="font-gill font-black text-2xl text-(--light-green)">
+                Propriété intellectuelle
+            </h2>
+            <div class="font-lato text-sm leading-relaxed flex flex-col gap-2 ml-6">
+                <p>
+                    Tous les contenus présents dans Gestons (textes, vidéos,
+                    illustrations, interface, mini-jeux, logo, éléments
+                    graphiques) sont protégés par le Code de la propriété
+                    intellectuelle.
+                </p>
+                <p>
+                    Toute reproduction, diffusion ou modification sans
+                    autorisation est interdite.
+                </p>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <h2 class="font-gill font-black text-2xl text-(--light-green)">
+                Responsabilité
+            </h2>
+            <div class="font-lato text-sm leading-relaxed flex flex-col gap-2 ml-6">
+                <p>
+                    L'éditeur s'efforce de fournir des informations fiables et
+                    mises à jour, mais ne peut garantir l'absence d'erreurs.
+                </p>
+                <p>
+                    L'utilisation de l'application se fait sous la seule
+                    responsabilité de l'utilisateur.
+                </p>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <h2 class="font-gill font-black text-2xl text-(--light-green)">
+                Signalement de contenu illicite
+            </h2>
+            <p class="font-lato text-sm leading-relaxed ml-6">
+                Tout utilisateur peut signaler un contenu manifestement illicite
+                à : <a
+                    href="mailto:contact@gestons.fr"
+                    class="underline underline-offset-2">contact@gestons.fr</a
+                >
+            </p>
+        </div>
+    </section>
+</Layout>

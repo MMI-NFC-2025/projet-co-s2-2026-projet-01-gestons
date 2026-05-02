@@ -1,0 +1,114 @@
+---
+import Facebook from "../assets/icon/facebook.svg";
+import Tiktok from "../assets/icon/tiktok.svg";
+import Insta from "../assets/icon/insta.svg";
+import Breakfooter from "../assets/icon/breakfooter.svg";
+import Point from "../assets/icon/point.svg";
+---
+
+<footer>
+    <img
+        src={Breakfooter.src}
+        alt=""
+        aria-hidden="true"
+        class="w-full block -mb-px"
+    />
+
+    <div class="bg-(--green) px-4 py-8 flex flex-col items-center gap-5">
+        <nav
+            class="flex flex-col items-center gap-2 pb-4"
+            aria-label="Navigation du pied de page"
+        >
+            <a
+                href="/contact"
+                class="text-(--light-green) font-sugo text-3xl font-medium hover:text-white transition-colors"
+            >
+                Contact
+            </a>
+            <a
+                href="/about"
+                class="text-(--light-green) font-sugo text-3xl font-medium hover:text-white transition-colors"
+            >
+                À propos
+            </a>
+        </nav>
+
+        <div class="flex items-center gap-6 pb-3">
+            <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                class="hover:opacity-75 transition-opacity"
+            >
+                <img
+                    src={Facebook.src}
+                    alt="Facebook"
+                    width="36"
+                    height="36"
+                    class="w-9 h-9"
+                />
+            </a>
+            <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                class="hover:opacity-75 transition-opacity"
+            >
+                <img
+                    src={Insta.src}
+                    alt="Instagram"
+                    width="36"
+                    height="36"
+                    class="w-9 h-9"
+                />
+            </a>
+            <a
+                href="https://tiktok.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="TikTok"
+                class="hover:opacity-75 transition-opacity"
+            >
+                <img
+                    src={Tiktok.src}
+                    alt="TikTok"
+                    width="32"
+                    height="36"
+                    class="w-8 h-9"
+                />
+            </a>
+        </div>
+
+        <img
+            src={Point.src}
+            alt=""
+            aria-hidden="true"
+            class="w-full max-w-xs opacity-60"
+        />
+
+        <nav
+            class="flex flex-wrap justify-center gap-x-4 gap-y-1"
+            aria-label="Liens légaux"
+        >
+            <a href="/legal" class="text-white/70 font-lato text-xs">
+                Mentions Légales
+            </a>
+            <a href="/cookies" class="text-white/70 font-lato text-xs">
+                Cookies
+            </a>
+            <a
+                href="/privacy-policy"
+                class="text-white/70 font-lato text-xs"
+            >
+                Politique de Confidentialité
+            </a>
+            <a href="/cgu" class="text-white/70 font-lato text-xs"> CGU </a>
+        </nav>
+
+        <p class="text-white/60 font-lato text-xs text-center">
+            @2026 Gestons! Tous droit réservés
+        </p>
+    </div>
+</footer>

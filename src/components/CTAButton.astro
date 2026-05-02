@@ -1,0 +1,23 @@
+---
+interface Props {
+    href: string;
+    label: string;
+    variant?: "primary" | "secondary";
+    icon?: string;
+}
+
+const { href, label, variant = "primary", icon } = Astro.props;
+---
+
+<a
+    href={href}
+    class:list={[
+        "inline-flex items-center justify-center gap-2 rounded-full px-6 py-2.5 font-sugo font-bold text-xl transition-all focus-visible:outline-2 focus-visible:outline-offset-2",
+        variant === "primary"
+            ? "bg-(--green) text-white hover:opacity-85 focus-visible:outline-(--green)"
+            : "text-(--green) bg-(--pink) hover:bg-(--green) hover:text-white focus-visible:outline-(--green)",
+    ]}
+>
+    {icon && <img src={icon} alt="" aria-hidden="true" class="w-5 h-5" />}
+    {label}
+</a>

@@ -1,0 +1,50 @@
+---
+interface Props {
+    label: string;
+    name: string;
+    type?: "text" | "email" | "tel" | "password";
+    placeholder?: string;
+    required?: boolean;
+    multiline?: boolean;
+    rows?: number;
+}
+
+const {
+    label,
+    name,
+    type = "text",
+    placeholder = "",
+    required = false,
+    multiline = false,
+    rows = 5,
+} = Astro.props;
+
+const id = `field-${name}`;
+---
+
+<div class="flex flex-col gap-1 w-full">
+    <label for={id} class="font-lato text-sm font-bold text-(--green)">
+        {label}
+    </label>
+    {
+        multiline ? (
+            <textarea
+                id={id}
+                name={name}
+                rows={rows}
+                placeholder={placeholder}
+                required={required}
+                class="w-full rounded-xl bg-(--light-green) px-4 py-3 text-(--green) font-lato text-sm placeholder:text-(--green)/50 focus:outline-2 focus:outline-(--green) resize-none border-2 border-(--dark-green) focus:border-(--green) transition-colors"
+            />
+        ) : (
+            <input
+                id={id}
+                name={name}
+                type={type}
+                placeholder={placeholder}
+                required={required}
+                class="w-full rounded-xl bg-(--light-green) px-4 py-3 text-(--green) font-lato text-sm placeholder:text-(--green)/50 focus:outline-2 focus:outline-(--green) border-2 border-(--dark-green) focus:border-(--green) transition-colors"
+            />
+        )
+    }
+</div>

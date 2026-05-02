@@ -1,0 +1,178 @@
+---
+import Layout from "../layouts/Layout.astro";
+import BackButton from "../components/BackButton.astro";
+---
+
+<Layout title="Politique de Confidentialité — Gestons!">
+    <section class="px-5 pt-6 pb-16 flex flex-col gap-8">
+        <div class="flex justify-end">
+            <BackButton href="/" label="<- Retour" />
+        </div>
+
+        <div>
+            <h1
+                class="font-gill font-black text-5xl text-(--green) leading-tight"
+            >
+                Politique de confidentialité – Gestons
+            </h1>
+            <p class="font-lato text-sm mt-2 ml-6">
+                (Conformité RGPD – Règlement UE 2016/679)
+            </p>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <h2 class="font-sugo text-2xl text-(--light-green)">
+                Responsable du traitement
+            </h2>
+            <div
+                class="font-lato text-sm leading-relaxed flex flex-col gap-1 ml-6"
+            >
+                <p><strong>Équipe</strong> : Gestons</p>
+                <p>
+                    <strong>E-mail de contact</strong> : <a
+                        href="mailto:contact@gestons.fr"
+                        class="underline underline-offset-2"
+                        >contact@gestons.fr</a
+                    >
+                </p>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <h2 class="font-sugo text-2xl text-(--light-green)">
+                Données collectées
+            </h2>
+            <p class="font-lato text-sm font-bold ml-6">
+                Gestons collecte uniquement les données nécessaires à son
+                fonctionnement :
+            </p>
+            <ul
+                class="font-lato text-sm leading-relaxed list-disc list-inside flex flex-col gap-1 ml-6"
+            >
+                <li>
+                    <strong>données de compte</strong> : prénom/pseudonyme, adresse
+                    e-mail, avatar, préférences ;
+                </li>
+                <li>
+                    <strong>données d'usage</strong> : progression, scores, modules
+                    suivis ;
+                </li>
+                <li>
+                    <strong>données techniques</strong> : modèle d'appareil, version
+                    de l'application, logs anonymisés.
+                </li>
+            </ul>
+            <p class="font-lato text-sm font-bold ml-6">
+                Aucune donnée sensible n'est collectée.
+            </p>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <h2 class="font-sugo text-2xl text-(--light-green)">Finalités</h2>
+            <p class="font-lato text-sm font-bold ml-6">
+                Les données sont utilisées pour :
+            </p>
+            <ul
+                class="font-lato text-sm leading-relaxed list-disc list-inside flex flex-col gap-1 ml-6"
+            >
+                <li>
+                    permettre la création et la gestion d'un compte utilisateur
+                    ;
+                </li>
+                <li>sauvegarder la progression ;</li>
+            </ul>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <h2 class="font-sugo text-2xl text-(--light-green)">Base légale</h2>
+            <ul
+                class="font-lato text-sm leading-relaxed list-disc list-inside flex flex-col gap-1 ml-6"
+            >
+                <li>exécution du service ;</li>
+                <li>
+                    consentement (création de compte, communications
+                    facultatives) ;
+                </li>
+                <li>intérêt légitime (amélioration technique).</li>
+            </ul>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <h2 class="font-sugo text-2xl text-(--light-green)">
+                Destinataires
+            </h2>
+            <ul
+                class="font-lato text-sm leading-relaxed list-disc list-inside flex flex-col gap-1 ml-6"
+            >
+                <li>équipe Gestons ;</li>
+                <li>
+                    prestataires techniques indispensables (hébergement
+                    Infomaniak, outils internes).
+                </li>
+            </ul>
+            <p class="font-lato text-sm font-bold ml-6">
+                Aucune donnée n'est vendue ou partagée à des tiers non
+                autorisés.
+            </p>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <h2 class="font-sugo text-2xl text-(--light-green)">
+                Durée de conservation
+            </h2>
+            <ul
+                class="font-lato text-sm leading-relaxed list-disc list-inside flex flex-col gap-1 ml-6"
+            >
+                <li>données de compte : jusqu'à suppression du compte ;</li>
+                <li>progression : tant que le compte existe ;</li>
+                <li>logs techniques : 90 jours ;</li>
+                <li>statistiques anonymisées : durée illimitée.</li>
+            </ul>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <h2 class="font-sugo text-2xl text-(--light-green)">
+                Droits des utilisateurs
+            </h2>
+            <p class="font-lato text-sm leading-relaxed ml-6">
+                Accès, rectification, effacement, limitation, opposition,
+                portabilité, retrait du consentement.
+            </p>
+            <p class="font-lato text-sm leading-relaxed ml-6">
+                Demande à adresser à : <a
+                    href="mailto:contact@gestons.fr"
+                    class="underline underline-offset-2">contact@gestons.fr</a
+                >
+            </p>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <h2 class="font-sugo text-2xl text-(--light-green)">Sécurité</h2>
+            <p class="font-lato text-sm leading-relaxed ml-6">
+                Chiffrement des communications, stockage sécurisé, accès
+                restreint, anonymisation des statistiques.
+            </p>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <h2 class="font-sugo text-2xl text-(--light-green)">
+                Transferts hors UE
+            </h2>
+            <p class="font-lato text-sm leading-relaxed ml-6">
+                Infomaniak est situé en Suisse, pays reconnu comme adéquat par
+                l'Union européenne.
+            </p>
+            <p class="font-lato text-sm leading-relaxed ml-6">
+                Aucun transfert supplémentaire hors UE n'est effectué.
+            </p>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <h2 class="font-sugo text-2xl text-(--light-green)">Mise à jour</h2>
+            <p class="font-lato text-sm leading-relaxed ml-6">
+                La politique peut être modifiée en fonction des évolutions de
+                l'application.
+            </p>
+        </div>
+    </section>
+</Layout>

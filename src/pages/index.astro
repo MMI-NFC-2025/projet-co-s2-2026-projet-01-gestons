@@ -1,14 +1,263 @@
 ---
-import Welcome from "../components/Welcome.astro";
-import Layout from "../layouts/Layout.astro";
+import LandingLayout from "../layouts/LandingLayout.astro";
+import CTAButton from "../components/CTAButton.astro";
+import fusee from "../assets/icon/fusee.svg";
+import { Image } from "astro:assets";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import logo from "../assets/icon/logo_dark-green.svg";
+import breakpage from "../assets/icon/breakpage.svg";
+import star from "../assets/icon/star.svg";
+import rectangle from "../assets/icon/rectangle.svg";
+import modeIcon from "../assets/icon/mode-icon.svg";
+import magicwand from "../assets/icon/magicwand.svg";
+import battle1 from "../assets/icon/battle1.svg";
+import loupe from "../assets/icon/loupe.svg";
+import training1 from "../assets/icon/training1.svg";
+import mascotte1 from "../assets/img/mascotte1.avif";
+import mascotte2 from "../assets/img/mascotte2.avif";
+import multiplayer from "../assets/icon/multiplayer.svg";
+
+import phoneHome from "../assets/img/mobilemockup1.avif";
+import phoneGame from "../assets/img/mobilemockup2.avif";
 ---
 
-<Layout>
-	<h1 class="font-sugo text-4xl">Test Sugo</h1>
-	<p class="font-gill text-4xl">Test Gill Sans</p>
-	<p class="import '@fontsource/lato'; text-4xl">Test Lato</p>
-	<Welcome />
-</Layout>
+<LandingLayout title="Gestons! - Apprenez la langue des signes">
+    <section
+        class="bg-(--light-green) px-5 pt-8 pb-0 relative overflow-visible"
+    >
+        <div class="max-w-lg mx-auto flex flex-col items-center gap-5">
+            <a href="/" aria-label="Accueil Gestons!">
+                <img src={logo.src} alt="Gestons!" class="h-10 w-auto mb-8" />
+            </a>
+
+            <h1
+                class="text-center text-6xl md:text-5xl font-gill font-black text-(--green) leading-tight mb-6"
+            >
+                Apprenez la langue des signes
+            </h1>
+
+            <p class="text-center font-lato text-base text-(--green) max-w-sm">
+                Tout en vous amusant venez découvrir et apprendre une langue
+                encore trop oublié... la langue des signes française.
+            </p>
+
+            <div class="flex items-center gap-4 flex-wrap justify-center">
+                <CTAButton
+                    href="/inscription"
+                    label="Inscription"
+                    variant="primary"
+                    icon={fusee.src}
+                />
+                <CTAButton
+                    href="/connexion"
+                    label="Connexion"
+                    variant="secondary"
+                />
+            </div>
+
+            <div class="relative w-full max-w-xs mx-auto mt-4">
+                <img
+                    src={star.src}
+                    alt=""
+                    aria-hidden="true"
+                    class="absolute top-10 -left-4 w-9 h-auto z-20"
+                />
+                <img
+                    src={star.src}
+                    alt=""
+                    aria-hidden="true"
+                    class="absolute top-2 right-0 w-5 h-auto z-20"
+                />
+                <img
+                    src={star.src}
+                    alt=""
+                    aria-hidden="true"
+                    class="absolute bottom-24 -right-4 w-7 h-auto z-20"
+                />
+                <img
+                    src={star.src}
+                    alt=""
+                    aria-hidden="true"
+                    class="absolute bottom-16 left-2 w-4 h-auto z-20"
+                />
+                <Image
+                    src={phoneHome}
+                    alt="Aperçu de l'application Gestons!"
+                    class="relative z-10 block w-full drop-shadow-2xl ml-3"
+                    widths={[320, 640]}
+                    sizes="(max-width: 640px) 320px, 640px"
+                />
+                <img
+                    src={rectangle.src}
+                    alt=""
+                    aria-hidden="true"
+                    class="absolute -bottom-4 left-0 right-0 w-full z-0"
+                />
+            </div>
+        </div>
+        <img
+            src={breakpage.src}
+            alt=""
+            aria-hidden="true"
+            class="absolute bottom-0 left-1/2 -translate-x-1/2 w-screen z-20 translate-y-1/2"
+        />
+    </section>
+
+    <section class="px-5 py-18">
+        <div class="max-w-lg mx-auto flex flex-col gap-6">
+            <h2 class="font-gill font-black text-3xl text-(--green)">
+                Notre objectif...
+            </h2>
+
+            <p class="font-lato text-base text-gray-800">
+                ... vous faire apprendre la langue des signes française de
+                manière ludique&nbsp;!
+            </p>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div
+                    class="flex items-center gap-3 rounded-2xl border border-gray-200 px-4 py-3 shadow-sm"
+                >
+                    <img
+                        src={modeIcon.src}
+                        alt=""
+                        aria-hidden="true"
+                        class="w-8 h-8 flex-shrink-0"
+                    />
+                    <span class="font-lato text-sm text-gray-800"
+                        >Plusieurs modes</span
+                    >
+                </div>
+
+                <div
+                    class="flex items-center gap-3 rounded-2xl border border-gray-200 px-4 py-3 shadow-sm"
+                >
+                    <img
+                        src={magicwand.src}
+                        alt=""
+                        aria-hidden="true"
+                        class="w-8 h-8 flex-shrink-0"
+                    />
+                    <span class="font-lato text-sm text-gray-800"
+                        >Facile à comprendre</span
+                    >
+                </div>
+
+                <div
+                    class="col-span-2 flex items-center gap-3 rounded-2xl border border-gray-200 px-4 py-3 shadow-sm w-1/2 mx-auto"
+                >
+                    <img
+                        src={multiplayer.src}
+                        alt=""
+                        aria-hidden="true"
+                        class="w-8 h-8 flex-shrink-0"
+                    />
+                    <span class="font-lato text-sm text-gray-800"
+                        >Multijoueurs</span
+                    >
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section
+        class="bg-(--green) px-1 relative h-[379px] w-[379px] rounded-full mb-16"
+    >
+        <div
+            class="max-w-lg mx-auto flex flex-col items-center gap-6 relative z-10"
+        >
+            <span
+                class="absolute top-18 right-4 text-6xl text-(--pink) select-none"
+                aria-hidden="true">✦</span
+            >
+            <span
+                class="absolute bottom-35 left-6 text-6xl text-(--pink) select-none"
+                aria-hidden="true">✦</span
+            >
+
+            <div class="w-full max-w-xs ml-20">
+                <Image
+                    src={phoneGame}
+                    alt="Aperçu du jeu VRAI / FAUX"
+                    class="w-65 h-auto drop-shadow-2xl rounded-3xl"
+                    widths={[214, 411]}
+                    sizes="(max-width: 640px) 214px, 411px"
+                />
+            </div>
+        </div>
+    </section>
+
+    <section class="px-5 py-10">
+        <div class="max-w-lg mx-auto flex flex-col gap-8">
+            <h2 class="font-sugo font-black text-4xl text-(--green)">
+                Nos Fonctionnalités
+            </h2>
+
+            <div class="flex flex-col gap-8">
+                <div class="flex items-center gap-4">
+                    <img
+                        src={loupe.src}
+                        alt=""
+                        aria-hidden="true"
+                        class="w-12 h-12 flex-shrink-0 mt-1"
+                    />
+                    <p class="font-lato text-sm text-gray-800 leading-relaxed">
+                        <span class="font-bold">Notre moteur de recherche</span> conçu pour traduire
+                        les expressions du français parlé vers le français signé vous
+                        permettra de trouver instantanément la bonne expression en
+                        LSF&nbsp;!
+                    </p>
+                </div>
+
+                <img
+                    src={mascotte1.src}
+                    alt=""
+                    aria-hidden="true"
+                    class="w-62 h-auto mx-auto"
+                />
+
+                <div class="flex items-center gap-4">
+                    <p class="font-lato text-sm text-gray-800 leading-relaxed">
+                        Apprends la LSF autrement grâce à des <strong
+                            >mini-jeux courts, intuitifs et motivants</strong
+                        >. Mémorisation, reconnaissance visuelle, compréhension
+                        des expressions&nbsp;: chaque jeu renforce tes réflexes
+                        en français signé tout en rendant l'apprentissage
+                        agréable et progressif.
+                    </p>
+                    <img
+                        src={training1.src}
+                        alt=""
+                        aria-hidden="true"
+                        class="w-12 h-auto flex-shrink-0"
+                    />
+                </div>
+
+                <img
+                    src={mascotte2.src}
+                    alt=""
+                    aria-hidden="true"
+                    class="w-62 h-auto mx-auto"
+                />
+
+                <div class="flex items-center gap-4">
+                    <img
+                        src={battle1.src}
+                        alt=""
+                        aria-hidden="true"
+                        class="w-12 h-12 flex-shrink-0 mt-1"
+                    />
+                    <p class="font-lato text-sm text-gray-800 leading-relaxed">
+                        <strong
+                            >Affronte tes amis dans des mini-jeux rapides et fun</strong
+                        > autour du français signé. Qui reconnaît le plus vite une
+                        expression en LSF&nbsp;? Qui mémorise le mieux&nbsp;? Qui
+                        ira le plus loin dans la série parfaite&nbsp;? Un mode compétitif
+                        pensé pour apprendre en s'amusant et pour transformer chaque
+                        partie en défi.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</LandingLayout>

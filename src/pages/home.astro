@@ -1,0 +1,139 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Image } from "astro:assets";
+import gameImage1 from "../assets/img/img-home1.avif";
+import gameImage2 from "../assets/img/img-home2.avif";
+
+const streakDays = 5;
+const level = 4;
+const starsProgress = 3;
+const totalStars = 5;
+
+const word = "Bonjour";
+const wordId = "bonjour";
+---
+
+<Layout title="Gestons! - Accueil">
+    <div class="flex flex-col gap-8 py-6">
+        <section class="flex flex-col items-center gap-3 w-full px-4">
+            <span
+                class="text-8xl leading-none"
+                role="img"
+                aria-label="Flamme de série">🔥</span
+            >
+            <p class="text-center text-lg font-bold font-lato">
+                Série de <span class="text-(--light-green)">{streakDays}</span> jours
+                !!!
+            </p>
+            <p class="text-center font-lato text-base text-gray-700">
+                Continuez comme ça !
+            </p>
+            <div
+                class="flex items-center justify-around w-full max-w-xs rounded-full bg-(--green) px-6 py-3 border-(--pink) border-4"
+                role="progressbar"
+                aria-label={`${starsProgress} étoile${starsProgress > 1 ? "s" : ""} sur ${totalStars}`}
+                aria-valuenow={starsProgress}
+                aria-valuemin={0}
+                aria-valuemax={totalStars}
+            >
+                {
+                    Array.from({ length: totalStars }, (_, i) => (
+                        <span
+                            class:list={[
+                                "text-3xl leading-none select-none",
+                                i < starsProgress
+                                    ? "text-white"
+                                    : "text-white/25",
+                            ]}
+                            aria-hidden="true"
+                        >
+                            ★
+                        </span>
+                    ))
+                }
+            </div>
+            <p
+                class="text-center text-(--light-green) font-bold font-lato text-base"
+            >
+                Niveau {level} !!!
+            </p>
+        </section>
+
+        <hr class="border-(--light-green) mx-4" />
+
+        <section class="flex flex-col items-center gap-4 w-full px-4">
+            <h2 class="text-center text-3xl font-gill font-black">
+                Le Mot du Jour !
+            </h2>
+            <p class="text-center text-lg font-bold font-lato">{word}</p>
+            <div
+                class="w-full max-w-xs overflow-hidden border-2 border-(--light-green) bg-black h-45"
+            >
+            </div>
+            <a
+                href={`/mots/${wordId}`}
+                class="text-(--green) underline font-lato text-sm hover:text-(--light-green) transition-colors text-center"
+            >
+                Accédez à la fiche du mot en cliquant ici !
+            </a>
+        </section>
+
+        <hr class="border-(--light-green) mx-4" />
+
+        <section class="flex flex-col gap-6 w-full px-4">
+            <h2
+                class="text-center text-4xl md:text-5xl font-gill font-black uppercase tracking-tight"
+            >
+                APERCU DES JEUX
+            </h2>
+
+            <div class="flex flex-col gap-3 w-full">
+                <p
+                    class="font-bold font-lato text-base text-gray-900 underline underline-offset-4"
+                >
+                    Passe à l'action : signe, joue, progresse !
+                    <span
+                        class="text-gray-400 text-sm font-bold"
+                        aria-hidden="true">→</span
+                    >
+                </p>
+                <a
+                    href="/jeux/solo"
+                    class="block w-full rounded-2xl overflow-hidden hover:opacity-90 transition-opacity focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--light-green)"
+                >
+                    <Image
+                        src={gameImage1}
+                        alt="Jeu solo - apprendre l'alphabet en LSF"
+                        class="w-full h-auto object-cover border-(--pink) border-2"
+                        widths={[400, 800]}
+                        sizes="(max-width: 768px) 100vw, 800px"
+                    />
+                </a>
+            </div>
+
+            <div class="flex flex-col gap-3 w-full">
+                <p
+                    class="font-bold font-lato text-base text-gray-900 underline underline-offset-4"
+                >
+                    Défie tout le monde en multijoueur : c'est ici !
+                    <span
+                        class="text-gray-400 text-sm font-bold"
+                        aria-hidden="true">→</span
+                    >
+                </p>
+                <a
+                    href="/jeux/multijoueur"
+                    class="block w-full rounded-2xl overflow-hidden hover:opacity-90 transition-opacity focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--light-green)"
+                >
+                    <Image
+                        src={gameImage2}
+                        alt="Jeu multijoueur en LSF"
+                        class="w-full h-auto object-cover border-(--pink) border-2"
+                        widths={[400, 800]}
+                        sizes="(max-width: 768px) 100vw, 800px"
+                    />
+                </a>
+            </div>
+        </section>
+    </div>
+</Layout>

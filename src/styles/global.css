@@ -1,3 +1,4 @@
+@import "@fontsource/lato";
 @import "tailwindcss";
 
 @font-face {
@@ -19,4 +20,29 @@
     --font-sugo: "Sugo Pro Display", sans-serif;
     --font-gill: "Gill Sans Ultra Bold Condensed", sans-serif;
     --font-lato: "Lato", sans-serif;
+
+    --black: oklch(0 0 0);
+    /* #000000; */
+    --green: oklch(0.3861 0.059 188.42);
+    /* #134e4a */
+    --light-green: oklch(0.7845 0.1325 181.91);
+    /* #2dd4bf */
+    --pink: oklch(0.8077 0.1035 19.57);
+    /* #fca5a5 */
+    --white: oklch(0.9851 0 0);
+    /* #fafafa */
+}
+
+@layer base {
+    body {
+        background-color: #fafafa;
+    }
+
+    h1,h2,h3 {
+        color: var(--green);
+    }
+
+    p{
+        color: var(--green);
+    }
 }
