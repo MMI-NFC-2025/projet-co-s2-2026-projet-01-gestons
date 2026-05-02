@@ -1,0 +1,53 @@
+---
+import home from "../assets/icon/home.svg";
+import training from "../assets/icon/training.svg";
+import mascotte from "../assets/icon/mascotte.svg";
+import battle from "../assets/icon/battle.svg";
+import settings from "../assets/icon/settings.svg";
+
+const links = [
+    { href: "/home", label: "Home", icon: home.src },
+    { href: "/entrainement", label: "Entrainement", icon: training.src },
+    { href: "/personnalisation", label: "Personnalisation", icon: mascotte.src },
+    { href: "/battle", label: "Battle", icon: battle.src },
+    { href: "/compte", label: "Compte", icon: settings.src },
+];
+---
+
+<nav
+    id="bottom-nav"
+    class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2.5rem)] max-w-lg"
+    aria-label="Navigation principale"
+>
+    <ul class="bg-(--light-green) rounded-full px-4 py-3 flex items-center justify-around shadow-2xl shadow-black/70">
+        {links.map(({ href, label, icon }) => (
+            <li>
+                <a
+                    href={href}
+                    class="flex flex-col items-center gap-1 hover:opacity-75 transition-opacity"
+                    aria-label={label}
+                >
+                    <img src={icon} alt="" aria-hidden="true" class="w-8 h-8" />
+                    <span class="font-lato text-[10px] font-bold text-(--green)">{label}</span>
+                </a>
+            </li>
+        ))}
+    </ul>
+</nav>
+
+<script>
+    const nav = document.getElementById("bottom-nav");
+    const footer = document.querySelector("footer");
+    if (nav && footer) {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                nav.style.opacity = entry.isIntersecting ? "0" : "1";
+                nav.style.pointerEvents = entry.isIntersecting ? "none" : "auto";
+            },
+            { threshold: 0.1 }
+        );
+        observer.observe(footer);
+    }
+</script>
+
+

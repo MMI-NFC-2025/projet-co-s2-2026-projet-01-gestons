@@ -1,0 +1,47 @@
+---
+import Layout from "../layouts/Layout.astro";
+import FormInput from "../components/FormInput.astro";
+---
+
+<Layout title="Nous contacter — Gestons!">
+    <section class="px-5 pt-8 pb-32">
+        <h1 class="font-gill font-black text-4xl text-(--green) mb-4">
+            Nous contacter
+        </h1>
+
+        <p
+            class="font-lato font-bold text-sm text-gray-900 mb-8 leading-relaxed"
+        >
+            Besoin d'un coup de main ? Notre équipe est là pour t'accompagner.
+            Envoie-nous un message et on te répondra plus vite qu'un signe
+            éclair&nbsp;!
+        </p>
+
+        <form
+            method="POST"
+            action="/api/contact"
+            class="flex flex-col gap-5"
+            novalidate
+        >
+            <FormInput label="Prénom" name="prenom" required />
+            <FormInput label="Nom" name="nom" required />
+            <FormInput label="E-mail" name="email" type="email" required />
+            <FormInput
+                label="Message"
+                name="message"
+                multiline
+                rows={6}
+                required
+            />
+
+            <div>
+                <button
+                    type="submit"
+                    class="bg-(--green) text-(--pink) font-sugo text-xl rounded-xl px-8 py-3 hover:opacity-85 transition-opacity focus-visible:outline-2 focus-visible:outline-(--green)"
+                >
+                    Envoyer
+                </button>
+            </div>
+        </form>
+    </section>
+</Layout>
