@@ -1,0 +1,70 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CTAButton from "../components/CTAButton.astro";
+---
+
+<Layout title="Entraînement — Gestons!">
+    <section class="px-5 pt-8 pb-32 flex flex-col gap-8">
+        <h1
+            class="font-gill font-black text-6xl text-(--green) text-center leading-tight"
+        >
+            Battle
+        </h1>
+
+        <div class="flex flex-col gap-3">
+            <div>
+                <h2 class="font-sugo text-2xl text-(--light-green)">
+                    Les règles de la Battle :
+                </h2>
+                <p class="font-sugo text-base text-(--pink)">
+                    Affrontez vos adversaires dans un duel de rapidité et de
+                    précision !
+                </p>
+            </div>
+
+            <p class="font-lato text-sm leading-relaxed ml-6">
+                Le principe est simple : une image ou une vidéo de signe LSF
+                apparaît au centre de l'écran, accompagnée de quatre
+                propositions de mots. Pour l'emporter, vous devez identifier et
+                sélectionner le mot correspondant le plus vite possible.
+            </p>
+            <p class="font-lato text-sm leading-relaxed ml-6">
+                Votre mission est de valider la correspondance :
+            </p>
+            <p class="font-lato text-sm leading-relaxed ml-6">
+                Chaque seconde compte : plus votre réponse est immédiate, plus
+                vous engrangez de points pour distancer vos rivaux.
+            </p>
+            <p class="font-lato text-sm leading-relaxed ml-6">
+                Restez concentré, car la moindre erreur peut donner l'avantage à
+                votre adversaire. Prêt pour le face-à-face ? Que le meilleur
+                signeur gagne !
+            </p>
+        </div>
+
+        <div class="flex flex-col gap-3 items-center">
+            <div class="flex flex-row gap-4 flex-wrap">
+                <div class="items-start">
+                    <CTAButton
+                        href="/training/game"
+                        label="C'est parti !"
+                        variant="outline"
+                    />
+                    <p class="font-lato text-xs text-(--green) ml-1 mt-4">
+                        Lancer l'entraînement
+                    </p>
+                </div>
+                <div class="items-start">
+                    <CTAButton
+                        href="/battle"
+                        label="S’entrainer en solo"
+                        variant="white"
+                    />
+                    <p class="font-lato text-xs text-(--green) ml-1 mt-4">
+                        
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</Layout>
