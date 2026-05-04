@@ -7,7 +7,7 @@ const { title = "Gestons" } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="fr">
+<html lang="fr" class="overflow-x-hidden">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -34,7 +34,7 @@ const { title = "Gestons" } = Astro.props;
 		/>
 		<link rel="manifest" href="/site.webmanifest" />
 	</head>
-	<body class="bg-white min-h-screen font-lato">
+	<body class="w-full bg-white min-h-screen font-lato overflow-x-hidden">
 		<Header />
 		<main class="w-full max-w-lg mx-auto">
 			<slot />

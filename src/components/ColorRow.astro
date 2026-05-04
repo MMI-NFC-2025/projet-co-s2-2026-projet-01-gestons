@@ -1,0 +1,40 @@
+---
+interface Props {
+    label: string;
+    name: string;
+    colors: string[];
+    selected?: string;
+}
+
+const { label, name, colors, selected = colors[0] } = Astro.props;
+---
+
+<div class="flex flex-col gap-2">
+    <span class="font-lato text-sm text-(--green)">{label}</span>
+    <div class="flex items-center gap-3 flex-wrap">
+        {
+            colors.map((color) => (
+                <label class="cursor-pointer">
+                    <input
+                        type="radio"
+                        name={name}
+                        value={color}
+                        checked={color === selected}
+                        class="sr-only peer"
+                    />
+                    <span
+                        class="block w-10 h-10 rounded-full ring-2 ring-transparent peer-checked:ring-offset-2 peer-checked:ring-(--green) transition-all"
+                        style={`background-color: ${color}`}
+                    />
+                </label>
+            ))
+        }
+        <button
+            type="button"
+            aria-label={`Ajouter une couleur pour ${label}`}
+            class="w-10 h-10 rounded-full border-2 border-(--green) text-(--green) text-2xl font-bold flex items-center justify-center hover:bg-(--green) hover:text-white transition-all"
+        >
+            +
+        </button>
+    </div>
+</div>

@@ -7,6 +7,7 @@ interface Props {
     required?: boolean;
     multiline?: boolean;
     rows?: number;
+    variant?: "default" | "flat";
 }
 
 const {
@@ -17,9 +18,15 @@ const {
     required = false,
     multiline = false,
     rows = 5,
+    variant = "default",
 } = Astro.props;
 
 const id = `field-${name}`;
+
+const inputClass =
+    variant === "flat"
+        ? "w-full bg-gray-100 border-b-2 border-(--light-green) px-3 py-2 text-(--green) font-lato text-sm placeholder:text-(--green)/40 focus:outline-none focus:border-(--green) transition-colors"
+        : "w-full rounded-xl bg-(--light-green) px-4 py-3 text-(--green) font-lato text-sm placeholder:text-(--green)/50 focus:outline-2 focus:outline-(--green) border-2 border-(--dark-green) focus:border-(--green) transition-colors";
 ---
 
 <div class="flex flex-col gap-1 w-full">
@@ -34,7 +41,7 @@ const id = `field-${name}`;
                 rows={rows}
                 placeholder={placeholder}
                 required={required}
-                class="w-full rounded-xl bg-(--light-green) px-4 py-3 text-(--green) font-lato text-sm placeholder:text-(--green)/50 focus:outline-2 focus:outline-(--green) resize-none border-2 border-(--dark-green) focus:border-(--green) transition-colors"
+                class={`${inputClass} resize-none`}
             />
         ) : (
             <input
@@ -43,7 +50,7 @@ const id = `field-${name}`;
                 type={type}
                 placeholder={placeholder}
                 required={required}
-                class="w-full rounded-xl bg-(--light-green) px-4 py-3 text-(--green) font-lato text-sm placeholder:text-(--green)/50 focus:outline-2 focus:outline-(--green) border-2 border-(--dark-green) focus:border-(--green) transition-colors"
+                class={inputClass}
             />
         )
     }

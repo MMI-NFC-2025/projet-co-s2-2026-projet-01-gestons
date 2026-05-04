@@ -1,0 +1,41 @@
+---
+import MascotteSvg from "../assets/icon/mascotte.svg";
+import CheckSvg from "../assets/icon/check.svg";
+
+interface Props {
+    href?: string;
+    color?: string;
+    alt?: string;
+}
+
+const {
+    href = "/personalisation",
+    color = "var(--light-green)",
+    alt = "Avatar — modifier l'apparence",
+} = Astro.props;
+---
+
+<a
+    href={href}
+    aria-label={alt}
+    class="relative inline-block w-32 h-32 shrink-0"
+>
+    <div
+        class="w-full h-full rounded-full border-4 overflow-hidden flex items-center justify-center bg-white"
+        style={`border-color: ${color}`}
+    >
+        <img
+            src={MascotteSvg.src}
+            alt=""
+            aria-hidden="true"
+            class="w-24 h-24 object-contain"
+        />
+    </div>
+    <span
+        class="absolute bottom-1 right-1 w-8 h-8 rounded-full flex items-center justify-center border-2 border-white"
+        style={`background-color: ${color}`}
+        aria-hidden="true"
+    >
+        <img src={CheckSvg.src} alt="" class="w-4 h-4" />
+    </span>
+</a>
