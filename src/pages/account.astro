@@ -1,0 +1,67 @@
+---
+import Layout from "../layouts/Layout.astro";
+import BackButton from "../components/BackButton.astro";
+import AvatarLink from "../components/AvatarLink.astro";
+import FormInput from "../components/FormInput.astro";
+
+const user = {
+    username: "Lucas07",
+    email: "lucas.dubois@gmail.com",
+    phone: "06 67 12  04 25",
+    avatarColor: "var(--light-green)",
+};
+---
+
+<Layout title="Mon Compte — Gestons!">
+    <section class="px-5 pt-6 pb-32 flex flex-col gap-8">
+        <div class="flex items-start justify-between">
+            <AvatarLink
+                href="/perso"
+                color={user.avatarColor}
+                alt="Modifier l'avatar"
+            />
+            <BackButton href="/" label="<- Retour" />
+        </div>
+
+        <div class="flex flex-col gap-6">
+            <h2 class="font-gill font-black text-2xl text-(--green)">
+                Vos informations :
+            </h2>
+
+            <form
+                method="POST"
+                action="/api/account"
+                class="flex flex-col gap-5"
+            >
+                <FormInput
+                    label="Nom d'utilisateur"
+                    name="username"
+                    type="text"
+                    placeholder={user.username}
+                    variant="flat"
+                />
+                <FormInput
+                    label="Adresse e-mail"
+                    name="email"
+                    type="email"
+                    placeholder={user.email}
+                    variant="flat"
+                />
+                <FormInput
+                    label="Numéro de téléphone"
+                    name="phone"
+                    type="tel"
+                    placeholder={user.phone}
+                    variant="flat"
+                />
+                <FormInput
+                    label="Mot de passe"
+                    name="password"
+                    type="password"
+                    placeholder="••••••••••••••"
+                    variant="flat"
+                />
+            </form>
+        </div>
+    </section>
+</Layout>
