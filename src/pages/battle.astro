@@ -1,9 +1,38 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import CTAButton from "../components/CTAButton.astro";
+import mascotteImg from "../assets/img/mascotte1.avif";
+import checkIcon from "../assets/icon/check.svg";
+import mascotteIcon from "../assets/icon/mascotte.svg";
+import mascotteOnIcon from "../assets/icon/mascotte-on.svg";
+
+// TODO: remplacer par un fetch PocketBase une fois connecté
+// ex: const mots = await pb.collection('mots').getFullList()
+// ex: const participants = await pb.collection('participants').getFullList(...)
+const DUREE = 120;
+const mots = [
+    {
+        id: "bonjour",
+        image: null,
+        reponses: ["Bonjour", "Au revoir", "À Demain", "À plus tard"],
+        bonne_reponse: "Bonjour",
+    },
+    {
+        id: "merci",
+        image: null,
+        reponses: ["Merci", "Bonjour", "Pardon", "S'il vous plaît"],
+        bonne_reponse: "Merci",
+    },
+];
+const participants = [
+    { id: "p1", done: true },
+    { id: "p2", done: true },
+    { id: "p3", done: true },
+    { id: "p4", done: false },
+];
 ---
 
-<Layout title="Entraînement — Gestons!">
+<Layout title="Battle — Gestons!">
     <section class="px-5 pt-8 pb-32 flex flex-col gap-8">
         <h1
             class="font-gill font-black text-6xl text-(--green) text-center leading-tight"
@@ -21,15 +50,11 @@ import CTAButton from "../components/CTAButton.astro";
                     précision !
                 </p>
             </div>
-
             <p class="font-lato text-sm leading-relaxed ml-6">
                 Le principe est simple : une image ou une vidéo de signe LSF
                 apparaît au centre de l'écran, accompagnée de quatre
                 propositions de mots. Pour l'emporter, vous devez identifier et
                 sélectionner le mot correspondant le plus vite possible.
-            </p>
-            <p class="font-lato text-sm leading-relaxed ml-6">
-                Votre mission est de valider la correspondance :
             </p>
             <p class="font-lato text-sm leading-relaxed ml-6">
                 Chaque seconde compte : plus votre réponse est immédiate, plus
@@ -44,27 +69,292 @@ import CTAButton from "../components/CTAButton.astro";
 
         <div class="flex flex-col gap-3 items-center">
             <div class="flex flex-row gap-4 flex-wrap">
-                <div class="items-start">
-                    <CTAButton
-                        href="/training/game"
-                        label="C'est parti !"
-                        variant="outline"
-                    />
-                    <p class="font-lato text-xs text-(--green) ml-1 mt-4">
-                        Lancer l'entraînement
+                <div class="flex flex-col items-start gap-2">
+                    <button
+                        id="btn-start"
+                        class="inline-flex items-center justify-center gap-2 rounded-full px-6 py-2.5 font-sugo font-bold text-xl transition-all border-2 border-white text-white bg-(--light-green) hover:opacity-85 shadow-[0_0_18px_4px_var(--light-green)]"
+                    >
+                        C'est parti !
+                    </button>
+                    <p class="font-lato text-xs text-(--green) ml-1">
+                        Lancer la bataille
                     </p>
                 </div>
-                <div class="items-start">
+                <div class="flex flex-col items-start gap-2">
                     <CTAButton
-                        href="/battle"
-                        label="S’entrainer en solo"
+                        href="/training"
+                        label="S'entraîner en solo"
                         variant="white"
                     />
-                    <p class="font-lato text-xs text-(--green) ml-1 mt-4">
-                        
-                    </p>
                 </div>
             </div>
         </div>
     </section>
+
+    <div
+        id="battle-lightbox"
+        class="fixed inset-0 z-50 bg-white flex flex-col opacity-0 pointer-events-none transition-opacity duration-300"
+        aria-modal="true"
+        role="dialog"
+        aria-label="Jeu Battle"
+    >
+        <div class="flex items-center justify-between px-5 pt-5 pb-2 shrink-0">
+            <h2 class="font-gill font-black text-3xl text-(--green) uppercase">
+                BATTLE
+            </h2>
+            <button
+                id="btn-close"
+                aria-label="Quitter la battle"
+                class="border-2 border-(--light-green) text-(--green) font-lato text-sm rounded-xl px-4 py-2 hover:bg-(--light-green) hover:text-white transition-all"
+            >
+                ✕ Quitter
+            </button>
+        </div>
+
+        <div
+            class="flex flex-col gap-4 px-5 pb-6 overflow-y-auto flex-1 select-none"
+        >
+            <div class="flex justify-center">
+                <div
+                    id="timer-display"
+                    class="bg-(--light-green) text-white font-gill font-black text-5xl rounded-2xl px-10 py-4 tabular-nums tracking-wider transition-colors"
+                >
+                    2:00
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <div class="flex items-center -space-x-2">
+                    {
+                        participants.map((p) => (
+                            <div
+                                class="w-10 h-10 rounded-full border-2 border-white flex items-center justify-center shrink-0"
+                                style={
+                                    p.done
+                                        ? "background-color: var(--light-green)"
+                                        : "background-color: var(--pink)"
+                                }
+                            >
+                                {p.done ? (
+                                    <img
+                                        src={checkIcon.src}
+                                        alt=""
+                                        class="w-5 h-5"
+                                        aria-hidden="true"
+                                    />
+                                ) : (
+                                    <img
+                                        src={mascotteIcon.src}
+                                        alt=""
+                                        class="w-6 h-6"
+                                        aria-hidden="true"
+                                    />
+                                )}
+                            </div>
+                        ))
+                    }
+                </div>
+                <span
+                    class="font-gill font-black text-sm text-(--green) uppercase leading-tight"
+                >
+                    Suivis des autres<br />participants
+                </span>
+            </div>
+
+            <div
+                id="card"
+                class="w-full bg-(--light-green) rounded-3xl flex items-center justify-center overflow-hidden transition-transform duration-200"
+                style="min-height: 220px;"
+            >
+                <img
+                    id="card-image"
+                    src={mascotteImg.src}
+                    alt="Signe LSF"
+                    class="h-52 w-auto object-contain"
+                />
+            </div>
+
+            <div id="answers-grid" class="grid grid-cols-2 gap-3"></div>
+
+            <div
+                id="feedback"
+                class="hidden text-center font-gill font-black text-2xl py-3 rounded-full"
+            >
+            </div>
+
+            <div
+                id="end-screen"
+                class="hidden flex-col items-center gap-6 py-8"
+            >
+                <p
+                    id="end-title"
+                    class="font-gill font-black text-4xl text-(--green) text-center"
+                >
+                </p>
+                <p
+                    id="score-display"
+                    class="font-lato text-xl font-bold text-(--light-green)"
+                >
+                </p>
+                <button
+                    id="btn-restart"
+                    class="bg-(--green) text-white font-sugo font-bold text-xl rounded-full px-8 py-3 hover:opacity-85 transition-all"
+                >
+                    Rejouer
+                </button>
+                <a
+                    href="/classement"
+                    class="bg-(--light-green) text-white font-sugo font-bold text-xl rounded-full px-8 py-3 hover:opacity-85 transition-all shadow-[0_0_18px_4px_var(--light-green)]"
+                >
+                    Voir le classement
+                </a>
+                <button
+                    id="btn-close-end"
+                    class="border-2 border-(--light-green) text-(--green) font-lato text-sm rounded-xl px-6 py-2 hover:bg-(--light-green) hover:text-white transition-all"
+                >
+                    Quitter
+                </button>
+            </div>
+        </div>
+    </div>
 </Layout>
+
+<script define:vars={{ mots, DUREE }}>
+    const lightbox = document.getElementById("battle-lightbox");
+    const btnStart = document.getElementById("btn-start");
+    const btnClose = document.getElementById("btn-close");
+    const btnCloseEnd = document.getElementById("btn-close-end");
+    const btnRestart = document.getElementById("btn-restart");
+    const timerDisplay = document.getElementById("timer-display");
+    const cardImage = document.getElementById("card-image");
+    const answersGrid = document.getElementById("answers-grid");
+    const feedback = document.getElementById("feedback");
+    const endScreen = document.getElementById("end-screen");
+    const endTitle = document.getElementById("end-title");
+    const scoreDisplay = document.getElementById("score-display");
+    const card = document.getElementById("card");
+
+    let index = 0;
+    let score = 0;
+    let timeLeft = DUREE;
+    let timerInterval = null;
+    let gameOver = false;
+
+    function formatTime(s) {
+        const m = Math.floor(s / 60);
+        const sec = s % 60;
+        return `${m}:${sec.toString().padStart(2, "0")}`;
+    }
+
+    function startTimer() {
+        timerDisplay.textContent = formatTime(timeLeft);
+        timerDisplay.style.backgroundColor = "";
+        timerDisplay.style.color = "";
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            timerDisplay.textContent = formatTime(timeLeft);
+            if (timeLeft <= 10) {
+                timerDisplay.style.backgroundColor = "var(--pink)";
+                timerDisplay.style.color = "var(--green)";
+            }
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                showEnd(false);
+            }
+        }, 1000);
+    }
+
+    function loadCard() {
+        const mot = mots[index % mots.length];
+        // TODO: remplacer par l'URL PocketBase → cardImage.src = mot.image
+        card.classList.remove("scale-95");
+        card.style.display = "";
+        answersGrid.style.display = "";
+        feedback.classList.add("hidden");
+        feedback.textContent = "";
+        answersGrid.innerHTML = "";
+        const reponses = [...mot.reponses].sort(() => Math.random() - 0.5);
+        reponses.forEach((rep) => {
+            const btn = document.createElement("button");
+            btn.textContent = rep;
+            btn.style.backgroundColor = "var(--pink)";
+            btn.style.color = "var(--green)";
+            btn.className =
+                "font-gill font-black text-2xl rounded-full py-4 px-4 hover:opacity-85 active:scale-95 transition-all focus:outline-none";
+            btn.addEventListener("click", () => answer(rep, mot.bonne_reponse));
+            answersGrid.appendChild(btn);
+        });
+    }
+
+    function answer(choix, bonne) {
+        if (gameOver) return;
+        const correct = choix === bonne;
+        feedback.classList.remove("hidden");
+        if (correct) {
+            feedback.textContent = "✓ Bonne réponse !";
+            feedback.style.backgroundColor = "var(--light-green)";
+            feedback.style.color = "white";
+            score++;
+        } else {
+            feedback.textContent = `✗ C'était : ${bonne}`;
+            feedback.style.backgroundColor = "var(--pink)";
+            feedback.style.color = "var(--green)";
+        }
+        card.classList.add("scale-95");
+        Array.from(answersGrid.children).forEach((b) => (b.disabled = true));
+        setTimeout(() => {
+            if (!gameOver) {
+                index++;
+                loadCard();
+            }
+        }, 1000);
+    }
+
+    function showEnd(fini) {
+        gameOver = true;
+        clearInterval(timerInterval);
+        answersGrid.innerHTML = "";
+        feedback.classList.add("hidden");
+        card.style.display = "none";
+        answersGrid.style.display = "none";
+        endTitle.textContent = fini ? "Bravo, terminé !" : "Temps écoulé !";
+        scoreDisplay.textContent = `Score : ${score} / ${mots.length}`;
+        endScreen.classList.remove("hidden");
+        endScreen.classList.add("flex");
+    }
+
+    function openLightbox() {
+        index = 0;
+        score = 0;
+        timeLeft = DUREE;
+        gameOver = false;
+        endScreen.classList.add("hidden");
+        endScreen.classList.remove("flex");
+        lightbox.classList.remove("opacity-0", "pointer-events-none");
+        document.body.style.overflow = "hidden";
+        document.documentElement.style.overflow = "hidden";
+        loadCard();
+        startTimer();
+    }
+
+    function closeLightbox() {
+        clearInterval(timerInterval);
+        lightbox.classList.add("opacity-0", "pointer-events-none");
+        document.body.style.overflow = "";
+        document.documentElement.style.overflow = "";
+    }
+
+    btnStart.addEventListener("click", openLightbox);
+    btnClose.addEventListener("click", closeLightbox);
+    btnCloseEnd.addEventListener("click", closeLightbox);
+    btnRestart.addEventListener("click", () => {
+        endScreen.classList.add("hidden");
+        endScreen.classList.remove("flex");
+        index = 0;
+        score = 0;
+        timeLeft = DUREE;
+        gameOver = false;
+        loadCard();
+        startTimer();
+    });
+</script>

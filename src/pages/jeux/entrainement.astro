@@ -1,0 +1,355 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import BackButton from "../../components/BackButton.astro";
+import arrowLeft from "../../assets/icon/arrow-left.svg";
+import arrowRight from "../../assets/icon/arrow-right.svg";
+import infoIcon from "../../assets/icon/info.svg";
+import mascotte from "../../assets/icon/mascotte.svg";
+import mascotteOn from "../../assets/icon/mascotte-on.svg";
+import mascotteImg from "../../assets/img/mascotte1.avif";
+
+// TODO: remplacer par un fetch PocketBase une fois connecté
+// ex: const mots = await pb.collection('mots').getFullList({ sort: 'created' })
+// Chaque mot aura: { id, titre, image (URL PocketBase), reponse: true|false, mot_associe_id }
+const mots = [
+    {
+        id: "bonjour",
+        titre: "Bon apétit",
+        image: null,
+        reponse: true,
+    },
+    {
+        id: "merci",
+        titre: "Merci",
+        image: null,
+        reponse: false,
+    },
+    {
+        id: "oui",
+        titre: "Oui",
+        image: null,
+        reponse: true,
+    },
+];
+---
+
+<Layout title="Entraînement — Vrai / Faux — Gestons!">
+    <section class="px-5 pt-6 pb-32 flex flex-col gap-6 select-none">
+        <div class="flex items-center justify-between gap-4">
+            <h1 class="font-gill font-black text-4xl text-(--green) uppercase">
+                VRAI / FAUX
+            </h1>
+            <BackButton href="/training" label="<- Retour" />
+        </div>
+
+        <div class="flex flex-col items-center gap-6 py-8">
+            <img
+                src={mascotteOn.src}
+                alt=""
+                aria-hidden="true"
+                class="w-32 h-32 object-contain"
+            />
+            <p
+                class="font-lato text-sm text-(--green) text-center leading-relaxed max-w-xs"
+            >
+                {mots.length} mots à identifier. Swipez ou cliquez sur les flèches
+                pour répondre.
+            </p>
+            <button
+                id="btn-start"
+                class="bg-(--green) text-white font-sugo font-bold text-2xl rounded-full px-10 py-4 hover:opacity-85 transition-all shadow-[0_0_20px_4px_var(--light-green)]"
+            >
+                C'est parti !
+            </button>
+        </div>
+    </section>
+
+    <div
+        id="game-lightbox"
+        class="fixed inset-0 z-50 bg-white flex flex-col opacity-0 pointer-events-none transition-opacity duration-300"
+        aria-modal="true"
+        role="dialog"
+        aria-label="Jeu Vrai / Faux"
+    >
+        <div class="flex items-center justify-between px-5 pt-5 pb-2 shrink-0">
+            <h2 class="font-gill font-black text-3xl text-(--green) uppercase">
+                VRAI / FAUX
+            </h2>
+            <button
+                id="btn-close"
+                aria-label="Quitter le jeu"
+                class="border-2 border-(--light-green) text-(--green) font-lato text-sm rounded-xl px-4 py-2 hover:bg-(--light-green) hover:text-white transition-all"
+            >
+                ✕ Quitter
+            </button>
+        </div>
+
+        <div
+            id="game-container"
+            class="flex flex-col gap-4 px-5 pb-6 overflow-y-auto flex-1"
+        >
+            <div class="flex flex-col items-center gap-0">
+                <img
+                    id="mascotte-top"
+                    src={mascotteOn.src}
+                    alt=""
+                    aria-hidden="true"
+                    class="w-20 h-20 object-contain relative z-10 -mb-6"
+                />
+                <div
+                    id="card"
+                    class="w-full bg-(--light-green) rounded-3xl flex items-center justify-center overflow-hidden transition-transform duration-200"
+                    style="min-height: 240px;"
+                >
+                    <img
+                        id="card-image"
+                        src={mascotteImg.src}
+                        alt="Signe LSF"
+                        class="h-52 w-auto object-contain"
+                    />
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center gap-1">
+                <div class="h-0.5 w-10 bg-(--green) rounded-full"></div>
+                <div class="h-0.5 w-10 bg-(--green) rounded-full"></div>
+            </div>
+
+            <div
+                id="word-pill"
+                class="w-full bg-(--pink) rounded-full px-6 py-4 text-center"
+            >
+                <span
+                    id="word-label"
+                    class="font-gill font-black text-3xl text-(--green)"></span>
+            </div>
+
+            <div
+                id="actions-row"
+                class="flex items-end justify-between px-2 mt-1"
+            >
+                <button
+                    id="btn-faux"
+                    aria-label="Faux"
+                    class="flex flex-col items-center gap-1 group focus:outline-none"
+                >
+                    <img
+                        src={arrowLeft.src}
+                        alt=""
+                        aria-hidden="true"
+                        class="w-20 h-20 object-contain group-active:scale-90 transition-transform"
+                    />
+                    <span class="font-gill font-black text-3xl text-(--pink)"
+                        >FAUX</span
+                    >
+                </button>
+
+                <button
+                    id="btn-hint"
+                    aria-label="Afficher la réponse"
+                    class="flex flex-col items-center focus:outline-none"
+                >
+                    <img
+                        src={infoIcon.src}
+                        alt=""
+                        aria-hidden="true"
+                        class="w-28 h-28 object-contain active:scale-90 transition-transform"
+                    />
+                </button>
+
+                <button
+                    id="btn-vrai"
+                    aria-label="Vrai"
+                    class="flex flex-col items-center gap-1 group focus:outline-none"
+                >
+                    <img
+                        src={arrowRight.src}
+                        alt=""
+                        aria-hidden="true"
+                        class="w-20 h-20 object-contain group-active:scale-90 transition-transform"
+                    />
+                    <span
+                        class="font-gill font-black text-3xl text-(--light-green)"
+                        >VRAI</span
+                    >
+                </button>
+            </div>
+
+            <div
+                id="feedback"
+                class="hidden text-center font-gill font-black text-2xl py-2 rounded-full transition-all"
+            >
+            </div>
+
+            <div
+                id="hint-banner"
+                class="hidden text-center font-lato text-sm text-(--green) bg-(--light-green)/30 rounded-xl px-4 py-3"
+            >
+            </div>
+
+            <div
+                id="end-screen"
+                class="hidden flex-col items-center gap-4 py-8"
+            >
+                <p
+                    class="font-gill font-black text-3xl text-(--green) text-center"
+                >
+                    Bravo, entraînement terminé !
+                </p>
+                <p
+                    id="score-display"
+                    class="font-lato text-lg text-(--light-green) font-bold"
+                >
+                </p>
+                <button
+                    id="btn-restart"
+                    class="bg-(--green) text-white font-sugo font-bold text-xl rounded-full px-8 py-3 hover:opacity-85 transition-all"
+                >
+                    Recommencer
+                </button>
+                <button
+                    id="btn-close-end"
+                    class="border-2 border-(--light-green) text-(--green) font-lato text-sm rounded-xl px-6 py-2 hover:bg-(--light-green) hover:text-white transition-all"
+                >
+                    Quitter
+                </button>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script define:vars={{ mots }}>
+    const lightbox = document.getElementById("game-lightbox");
+    const btnStart = document.getElementById("btn-start");
+    const btnClose = document.getElementById("btn-close");
+    const btnCloseEnd = document.getElementById("btn-close-end");
+
+    function openLightbox() {
+        lightbox.classList.remove("opacity-0", "pointer-events-none");
+        document.body.style.overflow = "hidden";
+        loadCard();
+    }
+
+    function closeLightbox() {
+        lightbox.classList.add("opacity-0", "pointer-events-none");
+        document.body.style.overflow = "";
+        index = 0;
+        score = 0;
+    }
+
+    btnStart.addEventListener("click", openLightbox);
+    btnClose.addEventListener("click", closeLightbox);
+    btnCloseEnd.addEventListener("click", closeLightbox);
+
+    let index = 0;
+    let score = 0;
+    let hintUsed = false;
+
+    const wordLabel = document.getElementById("word-label");
+    const cardImage = document.getElementById("card-image");
+    const feedback = document.getElementById("feedback");
+    const hintBanner = document.getElementById("hint-banner");
+    const endScreen = document.getElementById("end-screen");
+    const actionsRow = document.getElementById("actions-row");
+    const wordPill = document.getElementById("word-pill");
+    const btnVrai = document.getElementById("btn-vrai");
+    const btnFaux = document.getElementById("btn-faux");
+    const btnHint = document.getElementById("btn-hint");
+    const btnRestart = document.getElementById("btn-restart");
+    const card = document.getElementById("card");
+    const scoreDisplay = document.getElementById("score-display");
+
+    function loadCard() {
+        if (index >= mots.length) {
+            showEnd();
+            return;
+        }
+        hintUsed = false;
+        const mot = mots[index];
+        wordLabel.textContent = mot.titre;
+        // TODO: remplacer par l'URL PocketBase → cardImage.src = mot.image
+        feedback.classList.add("hidden");
+        feedback.textContent = "";
+        hintBanner.classList.add("hidden");
+        hintBanner.textContent = "";
+        card.classList.remove("scale-95");
+    }
+
+    function answer(userReponse) {
+        const mot = mots[index];
+        const correct = userReponse === mot.reponse;
+
+        feedback.classList.remove("hidden");
+
+        if (correct) {
+            feedback.textContent = "✓ Bonne réponse !";
+            feedback.style.backgroundColor = "var(--light-green)";
+            feedback.style.color = "white";
+            score++;
+        } else {
+            feedback.textContent = "✗ Mauvaise réponse";
+            feedback.style.backgroundColor = "var(--pink)";
+            feedback.style.color = "var(--green)";
+        }
+
+        card.classList.add("scale-95");
+
+        setTimeout(() => {
+            index++;
+            loadCard();
+        }, 900);
+    }
+
+    function showHint() {
+        if (hintUsed) return;
+        hintUsed = true;
+        const mot = mots[index];
+        hintBanner.classList.remove("hidden");
+        hintBanner.textContent = mot.reponse
+            ? `✓ Le mot "${mot.titre}" est VRAI pour ce signe.`
+            : `✗ Le mot "${mot.titre}" est FAUX pour ce signe.`;
+    }
+
+    function showEnd() {
+        wordPill.classList.add("hidden");
+        actionsRow.classList.add("hidden");
+        feedback.classList.add("hidden");
+        hintBanner.classList.add("hidden");
+        scoreDisplay.textContent = `Score : ${score} / ${mots.length}`;
+        endScreen.classList.remove("hidden");
+        endScreen.classList.add("flex");
+    }
+
+    function restart() {
+        index = 0;
+        score = 0;
+        wordPill.classList.remove("hidden");
+        actionsRow.classList.remove("hidden");
+        endScreen.classList.add("hidden");
+        endScreen.classList.remove("flex");
+        loadCard();
+    }
+
+    // Swipe support
+    let touchStartX = 0;
+    card.addEventListener(
+        "touchstart",
+        (e) => {
+            touchStartX = e.touches[0].clientX;
+        },
+        { passive: true },
+    );
+    card.addEventListener(
+        "touchend",
+        (e) => {
+            const diff = e.changedTouches[0].clientX - touchStartX;
+            if (Math.abs(diff) > 60) answer(diff > 0);
+        },
+        { passive: true },
+    );
+
+    btnVrai.addEventListener("click", () => answer(true));
+    btnFaux.addEventListener("click", () => answer(false));
+    btnHint.addEventListener("click", showHint);
+    btnRestart.addEventListener("click", restart);
+</script>
