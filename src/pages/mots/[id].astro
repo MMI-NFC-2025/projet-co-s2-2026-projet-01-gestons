@@ -1,0 +1,142 @@
+---
+import PocketBase from "pocketbase";
+import Layout from "../../layouts/Layout.astro";
+import BackButton from "../../components/BackButton.astro";
+import mascotteImg from "../../assets/img/mascotte1.avif";
+
+const ERR = "erreur";
+
+export async function getStaticPaths() {
+    const pb = new PocketBase("https://gestons.girardin-tarby.fr");
+    const records = await pb.collection("mot").getFullList();
+
+    // Map nom_du_mot (mot_associe) → id PocketBase pour résoudre les liens
+    const nomToId = new Map<string, string>();
+    records.forEach((r) =>
+        nomToId.set((r.mot_associe as string).toLowerCase().trim(), r.id),
+    );
+
+    return records.map((record) => {
+        const videoUrl = record.video_mot
+            ? `https://gestons.girardin-tarby.fr/api/files/${record.collectionId}/${record.id}/${record.video_mot}`
+            : null;
+
+        // Résoudre l'id du mot associé à partir de son nom
+        const motAssocie = record.mot_associe as string;
+        const motAssocieId =
+            nomToId.get(motAssocie.toLowerCase().trim()) ?? null;
+
+        return {
+            params: { id: record.id },
+            props: {
+                mot: {
+                    titre: motAssocie || "erreur",
+                    genre: (record.genre_mot as string) || "erreur",
+                    instruction: (record.instruction_mot as string) || "erreur",
+                    niveau: (record.niveau_mot as string) || "erreur",
+                    videoUrl,
+                    motAssocieId,
+                },
+            },
+        };
+    });
+}
+
+const { mot } = Astro.props;
+
+const lignes: string[] =
+    mot.instruction === "erreur"
+        ? ["erreur"]
+        : mot.instruction.split("\n").filter(Boolean);
+---
+
+<Layout title={`${mot.titre} — Gestons!`}>
+    <section class="px-5 pt-6 pb-32 flex flex-col gap-6">
+        <!-- En-tête : titre + retour -->
+        <div class="flex items-start justify-between gap-4">
+            <div class="flex flex-col gap-1 flex-1 min-w-0">
+                <h1
+                    class="font-gill font-black text-5xl text-(--green) leading-tight wrap-break-word"
+                >
+                    {mot.titre}
+                </h1>
+                <p class="font-sugo text-lg text-(--light-green)">
+                    {mot.genre}
+                </p>
+            </div>
+            <BackButton href="/home" label="<- Retour" />
+        </div>
+
+        <hr class="border-t-2 border-(--green)/20" />
+
+        <!-- Vidéo / image -->
+        <div
+            class="w-full rounded-2xl bg-(--light-green) flex items-center justify-center overflow-hidden"
+            style="min-height: 220px;"
+        >
+            {
+                mot.videoUrl ? (
+                    <video
+                        src={mot.videoUrl}
+                        controls
+                        playsinline
+                        class="w-full max-h-64 object-contain rounded-2xl"
+                        aria-label={`Vidéo du signe LSF pour : ${mot.titre}`}
+                    />
+                ) : (
+                    <img
+                        src={mascotteImg.src}
+                        alt={`Signe LSF pour : ${mot.titre}`}
+                        class="h-52 w-auto object-contain"
+                    />
+                )
+            }
+        </div>
+
+        <!-- Instructions -->
+        <div class="flex flex-col gap-3">
+            <h2 class="font-sugo text-2xl text-(--green)">Comment signer ?</h2>
+            {
+                lignes.map((ligne) => (
+                    <p
+                        class={`font-lato text-sm leading-relaxed ml-6${ligne === "erreur" ? " text-red-500 italic" : ""}`}
+                    >
+                        {ligne}
+                    </p>
+                ))
+            }
+        </div>
+
+        <!-- Niveau -->
+        <div class="flex items-center gap-3 ml-6">
+            <span class="font-lato text-sm font-bold text-(--green)"
+                >Niveau :</span
+            >
+            <span
+                class={`font-lato text-sm font-bold px-3 py-1 rounded-full${mot.niveau === "erreur" ? " bg-red-100 text-red-500 italic" : " bg-(--pink) text-(--green)"}`}
+            >
+                {mot.niveau}
+            </span>
+        </div>
+        <!-- Mot associé -->
+        {
+            mot.motAssocieId && mot.motAssocieId !== Astro.params.id && (
+                <a
+                    href={`/mots/${mot.motAssocieId}`}
+                    class="font-lato text-sm underline underline-offset-4 text-(--green) inline-flex items-center gap-1 ml-6 hover:text-(--light-green) transition-colors w-fit"
+                >
+                    Un mot souvent associé →
+                </a>
+            )
+        }
+        <!-- Bouton entraînement -->
+        <div class="flex justify-center mt-4">
+            <a
+                href="/training"
+                class="inline-flex items-center justify-center bg-(--green) text-white font-gill font-black text-3xl leading-tight text-center rounded-full px-10 py-6 hover:opacity-85 transition-all shadow-[0_0_24px_4px_var(--light-green)] max-w-xs w-full"
+            >
+                Entrainez-vous ici !
+            </a>
+        </div>
+    </section>
+</Layout>

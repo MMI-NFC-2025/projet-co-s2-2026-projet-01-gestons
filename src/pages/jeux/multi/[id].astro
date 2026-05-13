@@ -1,0 +1,265 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import mascotteImg from "../../../assets/img/mascotte1.avif";
+import checkIcon from "../../../assets/icon/check.svg";
+import mascotteIcon from "../../../assets/icon/mascotte.svg";
+import mascotteOnIcon from "../../../assets/icon/mascotte-on.svg";
+
+// TODO: remplacer par un fetch PocketBase une fois connecté
+// ex: const session = await pb.collection('sessions').getOne(id)
+// ex: const mots = await pb.collection('mots').getFullList()
+// ex: const participants = await pb.collection('participants').getFullList({ filter: `session="${id}"` })
+export async function getStaticPaths() {
+    return [
+        {
+            params: { id: "demo" },
+            props: {
+                session: {
+                    id: "demo",
+                    duree: 120,
+                },
+                // TODO: charger depuis PocketBase — liste des mots de la session
+                mots: [
+                    {
+                        id: "bonjour",
+                        image: null,
+                        reponses: [
+                            "Bonjour",
+                            "Au revoir",
+                            "À Demain",
+                            "À plus tard",
+                        ],
+                        bonne_reponse: "Bonjour",
+                    },
+                    {
+                        id: "merci",
+                        image: null,
+                        reponses: [
+                            "Merci",
+                            "Bonjour",
+                            "Pardon",
+                            "S'il vous plaît",
+                        ],
+                        bonne_reponse: "Merci",
+                    },
+                ],
+                // TODO: charger depuis PocketBase — liste des participants en temps réel
+                participants: [
+                    { id: "p1", avatar: null, score: 3, done: true },
+                    { id: "p2", avatar: null, score: 2, done: true },
+                    { id: "p3", avatar: null, score: 3, done: true },
+                    { id: "p4", avatar: null, score: 0, done: false },
+                ],
+            },
+        },
+    ];
+}
+
+const { session, mots, participants } = Astro.props;
+const { id } = Astro.params;
+---
+
+<Layout title="Battle — Gestons!">
+    <section
+        class="px-5 pt-6 pb-32 flex flex-col gap-6 select-none"
+        id="battle-page"
+    >
+        <h1
+            class="font-gill font-black text-5xl text-(--green) uppercase text-center"
+        >
+            BATTLE
+        </h1>
+
+        <div class="flex justify-center">
+            <div
+                id="timer-display"
+                class="bg-(--light-green) text-white font-gill font-black text-5xl rounded-2xl px-10 py-4 tabular-nums tracking-wider"
+            >
+                2:00
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <div class="flex items-center -space-x-2">
+                {
+                    participants.map((p) => (
+                        <div
+                            class="w-10 h-10 rounded-full border-2 border-white flex items-center justify-center shrink-0"
+                            style={
+                                p.done
+                                    ? "background-color: var(--light-green)"
+                                    : "background-color: var(--pink)"
+                            }
+                        >
+                            {p.done ? (
+                                <img
+                                    src={checkIcon.src}
+                                    alt=""
+                                    class="w-5 h-5"
+                                    aria-hidden="true"
+                                />
+                            ) : (
+                                <img
+                                    src={mascotteIcon.src}
+                                    alt=""
+                                    class="w-6 h-6"
+                                    aria-hidden="true"
+                                />
+                            )}
+                        </div>
+                    ))
+                }
+            </div>
+            <span
+                class="font-gill font-black text-sm text-(--green) uppercase leading-tight"
+            >
+                Suivis des autres<br />participants
+            </span>
+        </div>
+
+        <div
+            id="card"
+            class="w-full bg-(--light-green) rounded-3xl flex items-center justify-center overflow-hidden"
+            style="min-height: 220px;"
+        >
+            <img
+                id="card-image"
+                src={mascotteImg.src}
+                alt="Signe LSF"
+                class="h-52 w-auto object-contain"
+            />
+        </div>
+
+        <div id="answers-grid" class="grid grid-cols-2 gap-3"></div>
+
+        <div
+            id="feedback"
+            class="hidden text-center font-gill font-black text-2xl py-3 rounded-full"
+        >
+        </div>
+
+        <div id="end-screen" class="hidden flex-col items-center gap-6 py-8">
+            <p
+                id="end-title"
+                class="font-gill font-black text-4xl text-(--green) text-center"
+            >
+            </p>
+            <p
+                id="score-display"
+                class="font-lato text-xl font-bold text-(--light-green)"
+            >
+            </p>
+            <a
+                href="/battle"
+                class="bg-(--green) text-white font-sugo font-bold text-xl rounded-full px-8 py-3 hover:opacity-85 transition-all"
+            >
+                Retour au lobby
+            </a>
+            <a
+                href="/classement"
+                class="bg-(--light-green) text-white font-sugo font-bold text-xl rounded-full px-8 py-3 hover:opacity-85 transition-all shadow-[0_0_18px_4px_var(--light-green)]"
+            >
+                Voir le classement
+            </a>
+        </div>
+    </section>
+</Layout>
+
+<script define:vars={{ mots, session }}>
+    let index = 0;
+    let score = 0;
+    let timeLeft = session.duree;
+    let timerInterval = null;
+    let gameOver = false;
+
+    const timerDisplay = document.getElementById("timer-display");
+    const cardImage = document.getElementById("card-image");
+    const answersGrid = document.getElementById("answers-grid");
+    const feedback = document.getElementById("feedback");
+    const endScreen = document.getElementById("end-screen");
+    const endTitle = document.getElementById("end-title");
+    const scoreDisplay = document.getElementById("score-display");
+    const card = document.getElementById("card");
+
+    function formatTime(s) {
+        const m = Math.floor(s / 60);
+        const sec = s % 60;
+        return `${m}:${sec.toString().padStart(2, "0")}`;
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            timerDisplay.textContent = formatTime(timeLeft);
+            if (timeLeft <= 10) {
+                timerDisplay.style.backgroundColor = "var(--pink)";
+                timerDisplay.style.color = "var(--green)";
+            }
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                showEnd(false);
+            }
+        }, 1000);
+    }
+
+    function loadCard() {
+        const mot = mots[index % mots.length];
+        // TODO: remplacer par l'URL PocketBase → cardImage.src = mot.image
+        card.classList.remove("scale-95");
+        feedback.classList.add("hidden");
+        feedback.textContent = "";
+
+        answersGrid.innerHTML = "";
+        const reponses = [...mot.reponses].sort(() => Math.random() - 0.5);
+        reponses.forEach((rep) => {
+            const btn = document.createElement("button");
+            btn.textContent = rep;
+            btn.className =
+                "bg-(--pink) text-(--green) font-gill font-black text-2xl rounded-full py-4 px-4 hover:opacity-85 active:scale-95 transition-all focus:outline-none";
+            btn.addEventListener("click", () => answer(rep, mot.bonne_reponse));
+            answersGrid.appendChild(btn);
+        });
+    }
+
+    function answer(choix, bonne) {
+        if (gameOver) return;
+        const correct = choix === bonne;
+
+        feedback.classList.remove("hidden");
+        if (correct) {
+            feedback.textContent = "✓ Bonne réponse !";
+            feedback.style.backgroundColor = "var(--light-green)";
+            feedback.style.color = "white";
+            score++;
+        } else {
+            feedback.textContent = `✗ C'était : ${bonne}`;
+            feedback.style.backgroundColor = "var(--pink)";
+            feedback.style.color = "var(--green)";
+        }
+
+        card.classList.add("scale-95");
+        Array.from(answersGrid.children).forEach((b) => (b.disabled = true));
+
+        setTimeout(() => {
+            if (!gameOver) {
+                index++;
+                loadCard();
+            }
+        }, 1000);
+    }
+
+    function showEnd(fini) {
+        gameOver = true;
+        answersGrid.innerHTML = "";
+        feedback.classList.add("hidden");
+        card.style.display = "none";
+        document.getElementById("answers-grid").style.display = "none";
+        endTitle.textContent = fini ? "Bravo, terminé !" : "Temps écoulé !";
+        scoreDisplay.textContent = `Score : ${score} / ${mots.length}`;
+        endScreen.classList.remove("hidden");
+        endScreen.classList.add("flex");
+    }
+
+    loadCard();
+    startTimer();
+</script>
