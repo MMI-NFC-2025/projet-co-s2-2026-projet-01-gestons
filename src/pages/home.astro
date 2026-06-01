@@ -3,14 +3,31 @@ import Layout from "../layouts/Layout.astro";
 import { Image } from "astro:assets";
 import gameImage1 from "../assets/img/img-home1.avif";
 import gameImage2 from "../assets/img/img-home2.avif";
+import PocketBase from "pocketbase";
 
 const streakDays = 5;
 const level = 4;
 const starsProgress = 3;
 const totalStars = 5;
 
-const word = "Bonjour";
-const wordId = "bonjour";
+// Mot du jour : aléatoire mais stable toute la journée (seed = date)
+const pb = new PocketBase("https://gestons.girardin-tarby.fr");
+const records = await pb
+    .collection("mot")
+    .getFullList({ fields: "id,mot_associe,video_mot,collectionId" });
+
+const today = new Date();
+const seed =
+    today.getFullYear() * 10000 +
+    (today.getMonth() + 1) * 100 +
+    today.getDate();
+const motDuJour = records[seed % records.length];
+
+const word = motDuJour?.mot_associe ?? "Bonjour";
+const wordId = motDuJour?.id ?? "";
+const videoUrl = motDuJour?.video_mot
+    ? `https://gestons.girardin-tarby.fr/api/files/${motDuJour.collectionId}/${motDuJour.id}/${motDuJour.video_mot}`
+    : null;
 ---
 
 <Layout title="Gestons! - Accueil">
@@ -67,8 +84,26 @@ const wordId = "bonjour";
             </h2>
             <p class="text-center text-lg font-bold font-lato">{word}</p>
             <div
-                class="w-full max-w-xs overflow-hidden border-2 border-(--light-green) bg-black h-45"
+                class="w-full max-w-xs overflow-hidden rounded-2xl border-2 border-(--light-green) bg-black flex items-center justify-center"
+                style="min-height: 180px;"
             >
+                {
+                    videoUrl ? (
+                        <video
+                            src={videoUrl}
+                            autoplay
+                            playsinline
+                            muted
+                            loop
+                            class="w-full h-auto max-h-56 object-contain"
+                            aria-label={`Signe LSF pour ${word}`}
+                        />
+                    ) : (
+                        <span class="text-white/40 text-sm font-lato">
+                            Vidéo non disponible
+                        </span>
+                    )
+                }
             </div>
             <a
                 href={`/mots/${wordId}`}
@@ -94,7 +129,8 @@ const wordId = "bonjour";
                     Passe à l'action : signe, joue, progresse !
                     <span
                         class="text-gray-400 text-sm font-bold"
-                        aria-hidden="true">→</span>
+                        aria-hidden="true">→</span
+                    >
                 </p>
                 <a
                     href="/training"

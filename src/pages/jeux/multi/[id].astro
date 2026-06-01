@@ -1,61 +1,53 @@
 ---
+import PocketBase from "pocketbase";
 import Layout from "../../../layouts/Layout.astro";
 import mascotteImg from "../../../assets/img/mascotte1.avif";
 import checkIcon from "../../../assets/icon/check.svg";
 import mascotteIcon from "../../../assets/icon/mascotte.svg";
 import mascotteOnIcon from "../../../assets/icon/mascotte-on.svg";
 
-// TODO: remplacer par un fetch PocketBase une fois connecté
-// ex: const session = await pb.collection('sessions').getOne(id)
-// ex: const mots = await pb.collection('mots').getFullList()
-// ex: const participants = await pb.collection('participants').getFullList({ filter: `session="${id}"` })
 export async function getStaticPaths() {
+    const pb = new PocketBase("https://gestons.girardin-tarby.fr");
+    const records = await pb.collection("mot").getFullList();
+
+    const noms = records.map((r) => r.mot_associe as string);
+
+    const mots = records.map((record, i) => {
+        const videoUrl = record.video_mot
+            ? `https://gestons.girardin-tarby.fr/api/files/${record.collectionId}/${record.id}/${record.video_mot}`
+            : null;
+        const bonne = record.mot_associe as string;
+        // 3 mauvaises réponses aléatoires parmi les autres mots
+        const autres = noms.filter((n) => n !== bonne);
+        const mauvaises: string[] = [];
+        const pool = [...autres].sort(() => Math.random() - 0.5);
+        while (mauvaises.length < 3 && pool.length) mauvaises.push(pool.pop()!);
+        const reponses = [bonne, ...mauvaises].sort(() => Math.random() - 0.5);
+        return { id: record.id, videoUrl, reponses, bonne_reponse: bonne };
+    });
+
+    // TODO: charger les participants depuis PocketBase
+    const participants = [
+        { id: "p1", name: "Lucas07", avatar: null, score: 0, done: false },
+        { id: "p2", name: "Chloé12", avatar: null, score: 0, done: false },
+        { id: "p3", name: "Lola01", avatar: null, score: 0, done: false },
+        { id: "p4", name: "Moi", avatar: null, score: 0, done: false },
+    ];
+
     return [
         {
             params: { id: "demo" },
             props: {
-                session: {
-                    id: "demo",
-                    duree: 120,
-                },
-                // TODO: charger depuis PocketBase — liste des mots de la session
-                mots: [
-                    {
-                        id: "bonjour",
-                        image: null,
-                        reponses: [
-                            "Bonjour",
-                            "Au revoir",
-                            "À Demain",
-                            "À plus tard",
-                        ],
-                        bonne_reponse: "Bonjour",
-                    },
-                    {
-                        id: "merci",
-                        image: null,
-                        reponses: [
-                            "Merci",
-                            "Bonjour",
-                            "Pardon",
-                            "S'il vous plaît",
-                        ],
-                        bonne_reponse: "Merci",
-                    },
-                ],
-                // TODO: charger depuis PocketBase — liste des participants en temps réel
-                participants: [
-                    { id: "p1", avatar: null, score: 3, done: true },
-                    { id: "p2", avatar: null, score: 2, done: true },
-                    { id: "p3", avatar: null, score: 3, done: true },
-                    { id: "p4", avatar: null, score: 0, done: false },
-                ],
+                session: { id: "demo", duree: 120 },
+                mots,
+                participants,
+                myId: "p4",
             },
         },
     ];
 }
 
-const { session, mots, participants } = Astro.props;
+const { session, mots, participants, myId } = Astro.props;
 const { id } = Astro.params;
 ---
 
@@ -122,12 +114,15 @@ const { id } = Astro.params;
             class="w-full bg-(--light-green) rounded-3xl flex items-center justify-center overflow-hidden"
             style="min-height: 220px;"
         >
-            <img
-                id="card-image"
-                src={mascotteImg.src}
-                alt="Signe LSF"
-                class="h-52 w-auto object-contain"
-            />
+            <video
+                id="card-video"
+                src=""
+                autoplay
+                playsinline
+                muted
+                loop
+                class="w-full max-h-56 object-contain rounded-3xl hidden"
+                aria-label="Signe LSF"></video>
         </div>
 
         <div id="answers-grid" class="grid grid-cols-2 gap-3"></div>
@@ -165,7 +160,8 @@ const { id } = Astro.params;
     </section>
 </Layout>
 
-<script define:vars={{ mots, session }}>
+<script define:vars={{ session }}>
+    let mots = [];
     let index = 0;
     let score = 0;
     let timeLeft = session.duree;
@@ -173,7 +169,8 @@ const { id } = Astro.params;
     let gameOver = false;
 
     const timerDisplay = document.getElementById("timer-display");
-    const cardImage = document.getElementById("card-image");
+    const cardVideo = document.getElementById("card-video");
+    const cardFallback = document.getElementById("card-fallback");
     const answersGrid = document.getElementById("answers-grid");
     const feedback = document.getElementById("feedback");
     const endScreen = document.getElementById("end-screen");
@@ -204,7 +201,15 @@ const { id } = Astro.params;
 
     function loadCard() {
         const mot = mots[index % mots.length];
-        // TODO: remplacer par l'URL PocketBase → cardImage.src = mot.image
+        if (mot.videoUrl) {
+            cardVideo.src = mot.videoUrl;
+            cardVideo.classList.remove("hidden");
+            cardFallback.classList.add("hidden");
+            cardVideo.play().catch(() => {});
+        } else {
+            cardVideo.classList.add("hidden");
+            cardFallback.classList.remove("hidden");
+        }
         card.classList.remove("scale-95");
         feedback.classList.add("hidden");
         feedback.textContent = "";
@@ -260,6 +265,39 @@ const { id } = Astro.params;
         endScreen.classList.add("flex");
     }
 
+    function startGame() {
+        loadCard();
+        startTimer();
+    }
+
     loadCard();
     startTimer();
+}
+
+// Chargement des mots directement depuis PocketBase côté client
+(async () => {
+    try {
+        const res = await fetch(
+            "https://gestons.girardin-tarby.fr/api/collections/mot/records?perPage=200"
+        );
+        const data = await res.json();
+        const records = data.items ?? [];
+        const noms = records.map((r) => r.mot_associe);
+
+        mots = records.map((r) => {
+            const videoUrl = r.video_mot
+                ? `https://gestons.girardin-tarby.fr/api/files/${r.collectionId}/${r.id}/${r.video_mot}`
+                : null;
+            const bonne = r.mot_associe;
+            const autres = noms.filter((n) => n !== bonne).sort(() => Math.random() - 0.5);
+            const reponses = [bonne, ...autres.slice(0, 3)].sort(() => Math.random() - 0.5);
+            return { id: r.id, videoUrl, reponses, bonne_reponse: bonne };
+        });
+
+        mots.sort(() => Math.random() - 0.5);
+    } catch (e) {
+        console.error("Erreur PocketBase:", e);
+    }
+    startGame();
+})();
 </script>
