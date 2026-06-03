@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import MascotteSvg from "../assets/icon/mascotte.svg";
 import CheckSvg from "../assets/icon/check.svg";
 
@@ -25,12 +24,10 @@ const {
         class="w-full h-full rounded-full border-4 overflow-hidden flex items-center justify-center bg-white"
         style={`border-color: ${color}`}
     >
-        <Image
-            src={MascotteSvg}
+        <img
+            src={MascotteSvg.src}
             alt=""
             aria-hidden="true"
-            width={96}
-            height={96}
             class="w-24 h-24 object-contain"
         />
     </div>
@@ -39,6 +36,6 @@ const {
         style={`background-color: ${color}`}
         aria-hidden="true"
     >
-        <Image src={CheckSvg} alt="" width={16} height={16} class="w-4 h-4" />
+        <img src={CheckSvg.src} alt="" class="w-4 h-4" />
     </span>
 </a>

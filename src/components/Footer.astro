@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import Facebook from "../assets/icon/facebook.svg";
 import Tiktok from "../assets/icon/tiktok.svg";
 import Insta from "../assets/icon/insta.svg";
@@ -9,12 +8,10 @@ import Logo from "../assets/icon/logo_dark-green.svg";
 ---
 
 <footer class="w-full">
-    <Image
-        src={Breakfooter}
+    <img
+        src={Breakfooter.src}
         alt=""
         aria-hidden="true"
-        width={800}
-        height={20}
         class="w-full block -mb-px"
     />
 
@@ -26,12 +23,10 @@ import Logo from "../assets/icon/logo_dark-green.svg";
             class="hidden lg:flex w-full items-start justify-between lg:order-1 mb-25"
         >
             <a href="/" aria-label="Retour en haut de la page">
-                <Image
-                    src={Logo}
+                <img
+                    src={Logo.src}
                     alt="Gestons!"
-                    width={180}
-                    height={48}
-                    class="h-12 w-auto filter-[brightness(2.72)] hover:opacity-75 transition-opacity"
+                    class="h-12 w-auto [filter:brightness(2.72)] hover:opacity-75 transition-opacity"
                 />
             </a>
             <nav
@@ -57,7 +52,13 @@ import Logo from "../assets/icon/logo_dark-green.svg";
                     aria-label="Instagram"
                     class="hover:opacity-75 transition-opacity"
                 >
-                    <Image src={Insta} alt="Instagram" width={36} height={36} class="w-9 h-9" />
+                    <img
+                        src={Insta.src}
+                        alt="Instagram"
+                        width="36"
+                        height="36"
+                        class="w-9 h-9"
+                    />
                 </a>
                 <a
                     href="https://facebook.com"
@@ -66,7 +67,13 @@ import Logo from "../assets/icon/logo_dark-green.svg";
                     aria-label="Facebook"
                     class="hover:opacity-75 transition-opacity"
                 >
-                    <Image src={Facebook} alt="Facebook" width={36} height={36} class="w-9 h-9" />
+                    <img
+                        src={Facebook.src}
+                        alt="Facebook"
+                        width="36"
+                        height="36"
+                        class="w-9 h-9"
+                    />
                 </a>
                 <a
                     href="https://tiktok.com"
@@ -75,7 +82,13 @@ import Logo from "../assets/icon/logo_dark-green.svg";
                     aria-label="TikTok"
                     class="hover:opacity-75 transition-opacity"
                 >
-                    <Image src={Tiktok} alt="TikTok" width={32} height={36} class="w-8 h-9" />
+                    <img
+                        src={Tiktok.src}
+                        alt="TikTok"
+                        width="32"
+                        height="36"
+                        class="w-8 h-9"
+                    />
                 </a>
             </div>
         </div>
@@ -108,7 +121,13 @@ import Logo from "../assets/icon/logo_dark-green.svg";
                 aria-label="Facebook"
                 class="hover:opacity-75 transition-opacity"
             >
-                <Image src={Facebook} alt="Facebook" width={36} height={36} class="w-9 h-9" />
+                <img
+                    src={Facebook.src}
+                    alt="Facebook"
+                    width="36"
+                    height="36"
+                    class="w-9 h-9"
+                />
             </a>
             <a
                 href="https://instagram.com"
@@ -117,7 +136,13 @@ import Logo from "../assets/icon/logo_dark-green.svg";
                 aria-label="Instagram"
                 class="hover:opacity-75 transition-opacity"
             >
-                <Image src={Insta} alt="Instagram" width={36} height={36} class="w-9 h-9" />
+                <img
+                    src={Insta.src}
+                    alt="Instagram"
+                    width="36"
+                    height="36"
+                    class="w-9 h-9"
+                />
             </a>
             <a
                 href="https://tiktok.com"
@@ -126,11 +151,17 @@ import Logo from "../assets/icon/logo_dark-green.svg";
                 aria-label="TikTok"
                 class="hover:opacity-75 transition-opacity"
             >
-                <Image src={Tiktok} alt="TikTok" width={32} height={36} class="w-8 h-9" />
+                <img
+                    src={Tiktok.src}
+                    alt="TikTok"
+                    width="32"
+                    height="36"
+                    class="w-8 h-9"
+                />
             </a>
         </div>
 
-        <!-- Liens légaux -->
+        <!-- Liens légaux : centrés mobile, étalés desktop (avant les pointillés) -->
         <nav
             class="flex flex-wrap justify-center gap-x-4 gap-y-1 lg:justify-between lg:w-full lg:order-2"
             aria-label="Liens légaux"
@@ -162,12 +193,10 @@ import Logo from "../assets/icon/logo_dark-green.svg";
         </nav>
 
         <!-- Pointillés -->
-        <Image
-            src={Point}
+        <img
+            src={Point.src}
             alt=""
             aria-hidden="true"
-            width={400}
-            height={10}
             class="w-full max-w-xs opacity-60 lg:max-w-none lg:order-3"
         />
 

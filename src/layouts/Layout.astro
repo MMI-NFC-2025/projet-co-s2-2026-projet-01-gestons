@@ -3,17 +3,11 @@ import "../styles/global.css";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import BottomNav from "../components/BottomNav.astro";
-
-interface Props {
-    title?: string;
-    landing?: boolean;
-}
-
-const { title = "Gestons!", landing = false } = Astro.props;
+const { title = "Gestons" } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="fr" class={landing ? undefined : "overflow-x-clip"}>
+<html lang="fr" class="overflow-x-clip">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,17 +15,34 @@ const { title = "Gestons!", landing = false } = Astro.props;
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
-		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet" />
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="/apple-touch-icon.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+			href="/favicon-32x32.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="16x16"
+			href="/favicon-16x16.png"
+		/>
 		<link rel="manifest" href="/site.webmanifest" />
 	</head>
-	<body class:list={["bg-white min-h-screen font-lato", !landing && "w-full overflow-x-hidden"]}>
-		{!landing && <Header />}
-		<main class:list={[!landing && "w-full max-w-lg mx-auto"]}>
+	<body class="w-full bg-white min-h-screen font-lato overflow-x-hidden">
+		<Header />
+		<main class="w-full max-w-lg mx-auto">
 			<slot />
 		</main>
-		{!landing && <BottomNav />}
+		<BottomNav />
 		<Footer />
 	</body>
 </html>
