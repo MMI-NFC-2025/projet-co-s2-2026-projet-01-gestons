@@ -1,0 +1,121 @@
+---
+import Layout from "../layouts/Layout.astro";
+import BackButton from "../components/BackButton.astro";
+import AvatarLink from "../components/AvatarLink.astro";
+import ColorRow from "../components/ColorRow.astro";
+import hatSvg from "../assets/icon/hat.svg";
+import bonnetSvg from "../assets/icon/bonnet.svg";
+import glassesSvg from "../assets/icon/glasses.svg";
+
+// TODO: remplacer par un fetch PocketBase une fois connecté
+// ex: const colors = await pb.collection('colors').getFullList()
+const COLORS = ["#e53e3e", "#3b4fd8", "#22c55e", "#c026d3"];
+
+const ACCESSORIES = [
+    { label: "Chapeau haut-de-forme", value: "hat-top", icon: hatSvg.src },
+    { label: "Bonnet", value: "hat-red", icon: bonnetSvg.src },
+    { label: "Lunettes", value: "glasses", icon: glassesSvg.src },
+];
+
+// TODO: charger depuis PocketBase — user.avatarColor, user.borderColor, etc.
+const user = {
+    avatarColor: "var(--light-green)",
+    fond: COLORS[0],
+    contour: COLORS[0],
+    mascotte: COLORS[0],
+    accessory: "",
+};
+---
+
+<Layout title="Personnalisation — Gestons!">
+    <section class="px-5 pt-6 pb-32 flex flex-col gap-8">
+        <div>
+            <h1
+                class="font-gill font-black text-4xl sm:text-5xl text-(--green) uppercase leading-tight break-words"
+            >
+                Personnalisation
+            </h1>
+            <div class="flex justify-between items-start mt-4">
+                <div class="flex justify-center">
+                    <AvatarLink
+                        href="/personalisation"
+                        color={user.avatarColor}
+                        alt="Aperçu de l'avatar"
+                    />
+                </div>
+                <BackButton href="/account" label="<- Retour" />
+            </div>
+        </div>
+
+        <form
+            method="POST"
+            action="/api/personalisation"
+            class="flex flex-col gap-6"
+        >
+            <h2 class="font-gill font-black text-2xl text-(--green)">
+                Choix couleur
+            </h2>
+
+            <ColorRow
+                label="Fond"
+                name="fond"
+                colors={COLORS}
+                selected={user.fond}
+            />
+            <ColorRow
+                label="Contour"
+                name="contour"
+                colors={COLORS}
+                selected={user.contour}
+            />
+            <ColorRow
+                label="Mascotte"
+                name="mascotte"
+                colors={COLORS}
+                selected={user.mascotte}
+            />
+
+            <div class="flex flex-col gap-2 mt-2">
+                <h2 class="font-gill font-black text-2xl text-(--green)">
+                    Accessoires
+                </h2>
+                <div class="flex items-center gap-4 flex-wrap">
+                    {
+                        ACCESSORIES.map((acc) => (
+                            <label class="cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="accessory"
+                                    value={acc.value}
+                                    checked={user.accessory === acc.value}
+                                    class="sr-only peer"
+                                />
+                                <span class="w-14 h-14 rounded-full border-2 border-(--light-green) bg-gray-100 flex items-center justify-center peer-checked:border-(--green) peer-checked:bg-(--light-green)/20 transition-all">
+                                    <img
+                                        src={acc.icon}
+                                        alt={acc.label}
+                                        class="w-8 h-8 object-contain"
+                                    />
+                                </span>
+                            </label>
+                        ))
+                    }
+                    <button
+                        type="button"
+                        aria-label="Ajouter un accessoire"
+                        class="w-14 h-14 rounded-full border-2 border-(--green) text-(--green) text-2xl font-bold flex items-center justify-center hover:bg-(--green) hover:text-white transition-all"
+                    >
+                        +
+                    </button>
+                </div>
+            </div>
+
+            <button
+                type="submit"
+                class="mt-4 bg-(--green) text-white font-sugo font-bold text-xl rounded-full px-6 py-2.5 hover:opacity-85 transition-all"
+            >
+                Sauvegarder
+            </button>
+        </form>
+    </section>
+</Layout>
