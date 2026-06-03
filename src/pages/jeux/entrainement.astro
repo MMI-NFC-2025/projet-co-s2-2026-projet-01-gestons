@@ -238,6 +238,16 @@ mots.sort(() => Math.random() - 0.5);
 </Layout>
 
 <script>
+    import PocketBase from "pocketbase";
+
+    const pb = new PocketBase("https://gestons.girardin-tarby.fr");
+
+    if (!pb.authStore.isValid) {
+        location.href = "/connexion";
+    }
+
+    const user = pb.authStore.model;
+
     let mots = [];
 
     // Chargement des mots depuis PocketBase côté client

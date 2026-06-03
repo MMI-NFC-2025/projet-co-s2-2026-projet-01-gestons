@@ -217,7 +217,283 @@ const participants = [
             </div>
         </div>
     </div>
+
+    <!-- Salle d'attente -->
+    <div
+        id="waiting-lightbox"
+        class="fixed inset-0 z-50 bg-white flex flex-col opacity-0 pointer-events-none transition-opacity duration-300"
+        aria-modal="true"
+        role="dialog"
+        aria-label="Salle d'attente"
+    >
+        <div class="flex items-center justify-between px-5 pt-5 pb-2 shrink-0">
+            <h2 class="font-gill font-black text-3xl text-(--green) uppercase">
+                BATTLE
+            </h2>
+            <button
+                id="btn-cancel-wait"
+                aria-label="Annuler la recherche"
+                class="border-2 border-(--pink) text-(--green) font-lato text-sm rounded-xl px-4 py-2 hover:bg-(--pink) hover:text-white transition-all"
+            >
+                ✕ Annuler
+            </button>
+        </div>
+
+        <div
+            class="flex flex-col items-center gap-6 px-5 py-8 flex-1 justify-center"
+        >
+            <img
+                src={mascotteImg.src}
+                alt="Mascotte"
+                class="w-32 h-32 object-contain animate-bounce"
+            />
+
+            <div class="text-center flex flex-col gap-1">
+                <p class="font-gill font-black text-2xl text-(--green)">
+                    Recherche d'une partie…
+                </p>
+                <p
+                    id="waiting-count"
+                    class="font-lato text-base text-(--light-green)"
+                >
+                    0 / 4 joueurs connectés
+                </p>
+            </div>
+
+            <div class="flex flex-row gap-3 items-center">
+                <div
+                    id="slot-user1"
+                    class="w-12 h-12 rounded-full border-2 border-gray-200 bg-gray-100 flex items-center justify-center transition-all"
+                >
+                    <img
+                        src={mascotteIcon.src}
+                        alt=""
+                        class="w-6 h-6 opacity-30"
+                        aria-hidden="true"
+                    />
+                </div>
+                <div
+                    id="slot-user2"
+                    class="w-12 h-12 rounded-full border-2 border-gray-200 bg-gray-100 flex items-center justify-center transition-all"
+                >
+                    <img
+                        src={mascotteIcon.src}
+                        alt=""
+                        class="w-6 h-6 opacity-30"
+                        aria-hidden="true"
+                    />
+                </div>
+                <div
+                    id="slot-user3"
+                    class="w-12 h-12 rounded-full border-2 border-gray-200 bg-gray-100 flex items-center justify-center transition-all"
+                >
+                    <img
+                        src={mascotteIcon.src}
+                        alt=""
+                        class="w-6 h-6 opacity-30"
+                        aria-hidden="true"
+                    />
+                </div>
+                <div
+                    id="slot-user4"
+                    class="w-12 h-12 rounded-full border-2 border-gray-200 bg-gray-100 flex items-center justify-center transition-all"
+                >
+                    <img
+                        src={mascotteIcon.src}
+                        alt=""
+                        class="w-6 h-6 opacity-30"
+                        aria-hidden="true"
+                    />
+                </div>
+            </div>
+
+            <p
+                id="waiting-status"
+                class="font-lato text-sm text-gray-400 text-center"
+            >
+                En attente d'autres joueurs…
+            </p>
+
+            <div class="flex gap-1.5">
+                <span
+                    class="w-2.5 h-2.5 rounded-full bg-(--light-green) animate-bounce"
+                    style="animation-delay: 0ms"></span>
+                <span
+                    class="w-2.5 h-2.5 rounded-full bg-(--light-green) animate-bounce"
+                    style="animation-delay: 150ms"></span>
+                <span
+                    class="w-2.5 h-2.5 rounded-full bg-(--light-green) animate-bounce"
+                    style="animation-delay: 300ms"></span>
+            </div>
+        </div>
+    </div>
 </Layout>
+
+<script>
+    import PocketBase from "pocketbase";
+    import type { RecordModel } from "pocketbase";
+
+    const pb = new PocketBase("https://gestons.girardin-tarby.fr");
+
+    if (!pb.authStore.isValid) {
+        location.href = "/connexion";
+    }
+
+    // --- Waiting room ---
+
+    const waitingLightbox = document.getElementById("waiting-lightbox")!;
+    const btnCancelWait = document.getElementById("btn-cancel-wait")!;
+    const waitingCount = document.getElementById("waiting-count")!;
+    const waitingStatus = document.getElementById("waiting-status")!;
+    const btnStart = document.getElementById("btn-start")!;
+
+    let currentSalonId: string | null = null;
+    let currentSlot: string | null = null;
+    let unsubscribeFn: (() => void) | null = null;
+
+    function updateWaitingUI(salon: RecordModel) {
+        const slots = ["user1", "user2", "user3", "user4"];
+        let count = 0;
+        slots.forEach((slot) => {
+            const el = document.getElementById(`slot-${slot}`)!;
+            const img = el.querySelector("img") as HTMLImageElement;
+            if (salon[slot]) {
+                count++;
+                el.style.backgroundColor = "var(--light-green)";
+                el.style.borderColor = "var(--light-green)";
+                img.style.opacity = "1";
+                img.style.filter = "brightness(0) invert(1)";
+            } else {
+                el.style.backgroundColor = "";
+                el.style.borderColor = "";
+                img.style.opacity = "0.3";
+                img.style.filter = "";
+            }
+        });
+        waitingCount.textContent = `${count} / 4 joueurs connectés`;
+    }
+
+    function openWaiting() {
+        waitingLightbox.classList.remove("opacity-0", "pointer-events-none");
+        document.body.style.overflow = "hidden";
+        document.documentElement.style.overflow = "hidden";
+    }
+
+    function closeWaiting() {
+        waitingLightbox.classList.add("opacity-0", "pointer-events-none");
+        document.body.style.overflow = "";
+        document.documentElement.style.overflow = "";
+    }
+
+    async function joinBattle() {
+        openWaiting();
+        waitingStatus.textContent = "En attente d'autres joueurs…";
+        waitingCount.textContent = "0 / 4 joueurs connectés";
+        ["user1", "user2", "user3", "user4"].forEach((slot) => {
+            const el = document.getElementById(`slot-${slot}`)!;
+            const img = el.querySelector("img") as HTMLImageElement;
+            el.style.backgroundColor = "";
+            el.style.borderColor = "";
+            img.style.opacity = "0.3";
+            img.style.filter = "";
+        });
+
+        try {
+            const result = await pb.collection("battle").getList(1, 10, {
+                filter: 'type_salon = "Disponible"',
+            });
+
+            const salon = result.items.find(
+                (s) => !s["user1"] || !s["user2"] || !s["user3"] || !s["user4"],
+            );
+
+            if (!salon) {
+                waitingStatus.textContent =
+                    "Aucune partie disponible pour le moment. Réessayez.";
+                return;
+            }
+
+            const slot = !salon["user1"]
+                ? "user1"
+                : !salon["user2"]
+                  ? "user2"
+                  : !salon["user3"]
+                    ? "user3"
+                    : !salon["user4"]
+                      ? "user4"
+                      : null;
+
+            if (!slot) {
+                waitingStatus.textContent =
+                    "Aucune place disponible. Réessayez.";
+                return;
+            }
+
+            currentSalonId = salon.id;
+            currentSlot = slot;
+
+            const updated = await pb
+                .collection("battle")
+                .update(salon.id, { [slot]: pb.authStore.model!.id });
+
+            updateWaitingUI(updated);
+
+            // Salon already full after joining?
+            if (
+                updated["user1"] &&
+                updated["user2"] &&
+                updated["user3"] &&
+                updated["user4"]
+            ) {
+                await pb
+                    .collection("battle")
+                    .update(salon.id, { type_salon: "Indisponible" });
+                closeWaiting();
+                window.location.href = `/jeux/multi/${salon.id}`;
+                return;
+            }
+
+            const unsubscribe = await pb
+                .collection("battle")
+                .subscribe(salon.id, async (e) => {
+                    const record = e.record;
+                    updateWaitingUI(record);
+                    if (record["type_salon"] === "Indisponible") {
+                        if (unsubscribeFn) unsubscribeFn();
+                        closeWaiting();
+                        window.location.href = `/jeux/multi/${salon.id}`;
+                    }
+                });
+            unsubscribeFn = unsubscribe;
+        } catch (err) {
+            console.error("Erreur lors de la recherche de partie :", err);
+            waitingStatus.textContent =
+                "Erreur lors de la recherche. Réessayez.";
+        }
+    }
+
+    async function cancelBattle() {
+        if (unsubscribeFn) {
+            unsubscribeFn();
+            unsubscribeFn = null;
+        }
+        if (currentSalonId && currentSlot) {
+            try {
+                await pb.collection("battle").update(currentSalonId, {
+                    [currentSlot]: null,
+                });
+            } catch (e) {
+                console.error("Erreur annulation :", e);
+            }
+            currentSalonId = null;
+            currentSlot = null;
+        }
+        closeWaiting();
+    }
+
+    btnStart.addEventListener("click", joinBattle);
+    btnCancelWait.addEventListener("click", cancelBattle);
+</script>
 
 <script define:vars={{ mots, DUREE }}>
     const lightbox = document.getElementById("battle-lightbox");
@@ -343,18 +619,4 @@ const participants = [
         document.body.style.overflow = "";
         document.documentElement.style.overflow = "";
     }
-
-    btnStart.addEventListener("click", openLightbox);
-    btnClose.addEventListener("click", closeLightbox);
-    btnCloseEnd.addEventListener("click", closeLightbox);
-    btnRestart.addEventListener("click", () => {
-        endScreen.classList.add("hidden");
-        endScreen.classList.remove("flex");
-        index = 0;
-        score = 0;
-        timeLeft = DUREE;
-        gameOver = false;
-        loadCard();
-        startTimer();
-    });
 </script>

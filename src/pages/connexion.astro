@@ -1,0 +1,66 @@
+---
+import Layout from "../layouts/Layout.astro";
+import FormInput from "../components/FormInput.astro";
+import CTAButton from "../components/CTAButton.astro";
+---
+
+<Layout>
+    <h1 class="font-gill font-black text-4xl text-(--green) mb-4 mt-8">
+        Se connecter
+    </h1>
+    <div class="px-5 pt-8 pb-32 flex flex-col gap-5">
+        <FormInput label="E-mail" name="email" type="email" required />
+        <FormInput
+            label="Mot de passe"
+            name="password"
+            type="password"
+            required
+        />
+        <div class="flex flex-row gap-3">
+            <CTAButton
+                href="/inscription"
+                label="S'inscrire"
+                variant="secondary"
+                customClass="flex-1"
+            />
+            <CTAButton
+                id="submitBtn"
+                label="Se connecter"
+                customClass="flex-1"
+            />
+        </div>
+    </div>
+</Layout>
+
+<script>
+    import PocketBase from "pocketbase";
+
+    const pb = new PocketBase("https://gestons.girardin-tarby.fr");
+
+    document.addEventListener("DOMContentLoaded", () => {
+        document
+            .getElementById("submitBtn")
+            ?.addEventListener("click", async () => {
+                const email = (
+                    document.getElementById("field-email") as HTMLInputElement
+                ).value;
+                const password = (
+                    document.getElementById(
+                        "field-password",
+                    ) as HTMLInputElement
+                ).value;
+
+                try {
+                    await pb
+                        .collection("users")
+                        .authWithPassword(email, password, {
+                            requestKey: null,
+                        });
+                    window.location.href = "/perso";
+                } catch (err: any) {
+                    console.error(err);
+                    alert("Email ou mot de passe incorrect.");
+                }
+            });
+    });
+</script>

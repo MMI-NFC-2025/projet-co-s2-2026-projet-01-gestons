@@ -3,13 +3,6 @@ import Layout from "../layouts/Layout.astro";
 import BackButton from "../components/BackButton.astro";
 import AvatarLink from "../components/AvatarLink.astro";
 import FormInput from "../components/FormInput.astro";
-
-const user = {
-    username: "Lucas07",
-    email: "lucas.dubois@gmail.com",
-    phone: "06 67 12  04 25",
-    avatarColor: "var(--light-green)",
-};
 ---
 
 <Layout title="Mon Compte — Gestons!">
@@ -17,7 +10,7 @@ const user = {
         <div class="flex items-start justify-between">
             <AvatarLink
                 href="/perso"
-                color={user.avatarColor}
+                color="var(--light-green)"
                 alt="Modifier l'avatar"
             />
             <BackButton href="/" label="<- Retour" />
@@ -37,31 +30,202 @@ const user = {
                     label="Nom d'utilisateur"
                     name="username"
                     type="text"
-                    placeholder={user.username}
                     variant="flat"
+                    readonly
                 />
                 <FormInput
                     label="Adresse e-mail"
                     name="email"
                     type="email"
-                    placeholder={user.email}
                     variant="flat"
-                />
-                <FormInput
-                    label="Numéro de téléphone"
-                    name="phone"
-                    type="tel"
-                    placeholder={user.phone}
-                    variant="flat"
+                    readonly
                 />
                 <FormInput
                     label="Mot de passe"
                     name="password"
                     type="password"
-                    placeholder="••••••••••••••"
                     variant="flat"
+                    readonly
                 />
+                <button
+                    type="button"
+                    id="btn-change-password"
+                    class="self-start font-lato text-sm font-bold text-(--light-green) underline hover:opacity-75 transition-opacity"
+                >
+                    Modifier le mot de passe
+                </button>
             </form>
+
+            <div id="change-password-form" class="hidden flex flex-col gap-5">
+                <h2 class="font-gill font-black text-xl text-(--green)">
+                    Nouveau mot de passe :
+                </h2>
+                <FormInput
+                    label="Mot de passe actuel"
+                    name="oldPassword"
+                    type="password"
+                    variant="flat"
+                    required
+                />
+                <FormInput
+                    label="Nouveau mot de passe"
+                    name="newPassword"
+                    type="password"
+                    variant="flat"
+                    required
+                />
+                <FormInput
+                    label="Confirmer le mot de passe"
+                    name="confirmNewPassword"
+                    type="password"
+                    variant="flat"
+                    required
+                />
+                <div
+                    id="password-error"
+                    class="hidden text-red-500 font-lato text-sm"
+                >
+                </div>
+                <div class="flex gap-3">
+                    <button
+                        type="button"
+                        id="btn-cancel-password"
+                        class="flex-1 rounded-2xl px-4 py-2.5 font-sugo font-bold text-lg bg-(--pink) text-(--green) hover:opacity-85 transition-all"
+                    >
+                        Annuler
+                    </button>
+                    <button
+                        type="button"
+                        id="btn-save-password"
+                        class="flex-1 rounded-2xl px-4 py-2.5 font-sugo font-bold text-lg bg-(--green) text-white hover:opacity-85 transition-all"
+                    >
+                        Enregistrer
+                    </button>
+                </div>
+            </div>
         </div>
     </section>
 </Layout>
+
+<script>
+    import PocketBase from "pocketbase";
+
+    const pb = new PocketBase("https://gestons.girardin-tarby.fr");
+
+    if (!pb.authStore.isValid) {
+        location.href = "/connexion";
+    }
+
+    const user = pb.authStore.model;
+
+    if (user) {
+        const usernameInput = document.getElementById(
+            "field-username",
+        ) as HTMLInputElement;
+        const emailInput = document.getElementById(
+            "field-email",
+        ) as HTMLInputElement;
+        const passwordInput = document.getElementById(
+            "field-password",
+        ) as HTMLInputElement;
+
+        if (usernameInput)
+            usernameInput.value = user.pseudo ?? user.username ?? "";
+        if (emailInput) emailInput.value = user.email ?? "";
+        if (passwordInput) passwordInput.value = "••••••••";
+    }
+
+    // Gestion du formulaire de changement de mot de passe
+    const btnChange = document.getElementById("btn-change-password");
+    const btnCancel = document.getElementById("btn-cancel-password");
+    const btnSave = document.getElementById("btn-save-password");
+    const changeForm = document.getElementById("change-password-form");
+    const errorDiv = document.getElementById("password-error");
+
+    btnChange?.addEventListener("click", () => {
+        changeForm?.classList.remove("hidden");
+        btnChange.classList.add("hidden");
+    });
+
+    btnCancel?.addEventListener("click", () => {
+        changeForm?.classList.add("hidden");
+        btnChange?.classList.remove("hidden");
+        (
+            document.getElementById("field-oldPassword") as HTMLInputElement
+        ).value = "";
+        (
+            document.getElementById("field-newPassword") as HTMLInputElement
+        ).value = "";
+        (
+            document.getElementById(
+                "field-confirmNewPassword",
+            ) as HTMLInputElement
+        ).value = "";
+        if (errorDiv) errorDiv.classList.add("hidden");
+    });
+
+    btnSave?.addEventListener("click", async () => {
+        const oldPassword = (
+            document.getElementById("field-oldPassword") as HTMLInputElement
+        ).value;
+        const newPassword = (
+            document.getElementById("field-newPassword") as HTMLInputElement
+        ).value;
+        const confirmPassword = (
+            document.getElementById(
+                "field-confirmNewPassword",
+            ) as HTMLInputElement
+        ).value;
+
+        if (!newPassword || newPassword.length < 8) {
+            if (errorDiv) {
+                errorDiv.textContent =
+                    "Le mot de passe doit contenir au moins 8 caractères.";
+                errorDiv.classList.remove("hidden");
+            }
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            if (errorDiv) {
+                errorDiv.textContent =
+                    "Les mots de passe ne correspondent pas.";
+                errorDiv.classList.remove("hidden");
+            }
+            return;
+        }
+
+        try {
+            btnSave.textContent = "Enregistrement...";
+            (btnSave as HTMLButtonElement).disabled = true;
+            await pb.collection("users").update(pb.authStore.model!.id, {
+                oldPassword,
+                password: newPassword,
+                passwordConfirm: confirmPassword,
+            });
+            changeForm?.classList.add("hidden");
+            btnChange?.classList.remove("hidden");
+            (
+                document.getElementById("field-oldPassword") as HTMLInputElement
+            ).value = "";
+            (
+                document.getElementById("field-newPassword") as HTMLInputElement
+            ).value = "";
+            (
+                document.getElementById(
+                    "field-confirmNewPassword",
+                ) as HTMLInputElement
+            ).value = "";
+            if (errorDiv) errorDiv.classList.add("hidden");
+            alert("Mot de passe modifié avec succès !");
+        } catch (err: any) {
+            if (errorDiv) {
+                errorDiv.textContent =
+                    err.message ?? "Une erreur est survenue.";
+                errorDiv.classList.remove("hidden");
+            }
+        } finally {
+            btnSave.textContent = "Enregistrer";
+            (btnSave as HTMLButtonElement).disabled = false;
+        }
+    });
+</script>

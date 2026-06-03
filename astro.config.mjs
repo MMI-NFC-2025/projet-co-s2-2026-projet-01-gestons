@@ -8,6 +8,9 @@ export default defineConfig({
   output: 'server',
   adapter: netlify(),
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    optimizeDeps: {
+      exclude: ["pocketbase"],
+    },
   }
 });

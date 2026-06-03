@@ -1,0 +1,93 @@
+---
+import Layout from "../layouts/Layout.astro";
+import FormInput from "../components/FormInput.astro";
+import CTAButton from "../components/CTAButton.astro";
+---
+
+<Layout>
+    <h1 class="font-gill font-black text-4xl text-(--green) mb-4 mt-8">
+        S'inscrire
+    </h1>
+    <div class="px-5 pt-8 pb-32 flex flex-col gap-5">
+        <FormInput
+            label="Nom d'utilisateur"
+            name="username"
+            type="text"
+            required
+        />
+        <FormInput label="E-mail" name="email" type="email" required />
+        <FormInput
+            label="Mot de passe"
+            name="password"
+            type="password"
+            required
+        />
+        <FormInput
+            label="Confirmer le mot de passe"
+            name="confirmPassword"
+            type="password"
+            required
+        />
+        <div class="flex flex-row gap-3">
+            <CTAButton
+                href="/connexion"
+                label="Se connecter"
+                variant="secondary"
+                customClass="flex-1"
+            />
+            <CTAButton id="submitBtn" label="S'inscrire" customClass="flex-1" />
+        </div>
+    </div>
+</Layout>
+
+<script>
+    import PocketBase from "pocketbase";
+
+    const pb = new PocketBase("https://gestons.girardin-tarby.fr");
+
+    document
+        .getElementById("submitBtn")
+        ?.addEventListener("click", async () => {
+            console.log("clic détecté");
+
+            const username = (
+                document.getElementById("field-username") as HTMLInputElement
+            ).value;
+            console.log("username:", username);
+            const email = (
+                document.getElementById("field-email") as HTMLInputElement
+            ).value;
+            const password = (
+                document.getElementById("field-password") as HTMLInputElement
+            ).value;
+            const confirmPassword = (
+                document.getElementById(
+                    "field-confirmPassword",
+                ) as HTMLInputElement
+            ).value;
+
+            if (password !== confirmPassword) {
+                alert("Les mots de passe ne correspondent pas.");
+                return;
+            }
+
+            if (password.length < 8) {
+                alert("Le mot de passe doit contenir au moins 8 caractères.");
+                return;
+            }
+
+            try {
+                await pb.collection("users").create({
+                    pseudo: username,
+                    email,
+                    password,
+                    passwordConfirm: password, // ← requis par l'API PocketBase, on remet juste password
+                });
+
+                window.location.href = "/perso";
+            } catch (err: any) {
+                console.error(err);
+                alert(err.message ?? "Une erreur est survenue.");
+            }
+        });
+</script>

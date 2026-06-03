@@ -1,5 +1,0 @@
-import { c as createSvgComponent } from './loupe_BETbNXWN.mjs';
-
-const checkIcon = createSvgComponent({"meta":{"src":"/_astro/check.Dn_SqElm.svg","width":33,"height":33,"format":"svg"},"attributes":{"width":"33","height":"33","fill":"none"},"children":"<circle cx=\"16.5\" cy=\"16.5\" r=\"16.5\" fill=\"#134E4A\" fill-opacity=\".83\" /><path d=\"M4.497 18.33a.753.753 0 011.062-.068l7.79 6.86-.994 1.13-7.79-6.86a.753.753 0 01-.068-1.062z\" fill=\"#fff\" /><path d=\"M27.007 8.498a.753.753 0 00-1.063.066L11.504 24.93l1.129.996L27.073 9.56a.753.753 0 00-.066-1.062z\" fill=\"#fff\" />","styles":[]});
-
-export { checkIcon as c };

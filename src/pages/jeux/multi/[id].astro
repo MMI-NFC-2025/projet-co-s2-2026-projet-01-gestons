@@ -102,19 +102,15 @@ const myId = "p4";
         >
             <video
                 id="card-video"
-                src=""
-                autoplay
+                class="w-full rounded-3xl hidden"
                 playsinline
-                muted
-                loop
-                class="w-full max-h-56 object-contain rounded-3xl hidden"
-                aria-label="Signe LSF"></video>
-            <img
+                muted></video>
+            <p
                 id="card-fallback"
-                src={mascotteImg.src}
-                alt="Signe LSF"
-                class="h-44 w-auto object-contain"
-            />
+                class="text-white font-gill font-black text-2xl hidden"
+            >
+                Pas de vidéo
+            </p>
         </div>
 
         <div id="answers-grid" class="grid grid-cols-2 gap-3"></div>
@@ -152,24 +148,79 @@ const myId = "p4";
     </section>
 </Layout>
 
-<script define:vars={{ session, mots, myId }}>
+<script>
+    import PocketBase from "pocketbase";
+
+    const pb = new PocketBase("https://gestons.girardin-tarby.fr");
+
+    if (!pb.authStore.isValid) {
+        location.href = "/connexion";
+    }
+
+    interface Mot {
+        id: string;
+        videoUrl: string | null;
+        reponses: string[];
+        bonne_reponse: string;
+    }
+
+    let mots: Mot[] = [];
     let index = 0;
     let score = 0;
-    let timeLeft = session.duree;
-    let timerInterval = null;
+    let timeLeft = 120;
+    let timerInterval: ReturnType<typeof setInterval> | null = null;
     let gameOver = false;
 
-    const timerDisplay = document.getElementById("timer-display");
-    const cardVideo = document.getElementById("card-video");
-    const cardFallback = document.getElementById("card-fallback");
-    const answersGrid = document.getElementById("answers-grid");
-    const feedback = document.getElementById("feedback");
-    const endScreen = document.getElementById("end-screen");
-    const endTitle = document.getElementById("end-title");
-    const scoreDisplay = document.getElementById("score-display");
-    const card = document.getElementById("card");
+    const timerDisplay = document.getElementById(
+        "timer-display",
+    ) as HTMLElement;
+    const cardVideo = document.getElementById("card-video") as HTMLVideoElement;
+    const cardFallback = document.getElementById(
+        "card-fallback",
+    ) as HTMLElement;
+    const answersGrid = document.getElementById("answers-grid") as HTMLElement;
+    const feedback = document.getElementById("feedback") as HTMLElement;
+    const endScreen = document.getElementById("end-screen") as HTMLElement;
+    const endTitle = document.getElementById("end-title") as HTMLElement;
+    const scoreDisplay = document.getElementById(
+        "score-display",
+    ) as HTMLElement;
+    const card = document.getElementById("card") as HTMLElement;
 
-    function formatTime(s) {
+    (async () => {
+        const res = await fetch(
+            "https://gestons.girardin-tarby.fr/api/collections/mot/records?perPage=200",
+        );
+        const data = await res.json();
+        console.log("data:", data);
+        const records: any[] = data.items ?? [];
+        console.log("records:", records.length);
+        console.log("premier record:", records[0]);
+        const noms: string[] = records.map((r) => r.mot_associe);
+
+        records.forEach((r) => {
+            const videoFile = Array.isArray(r.video_mot)
+                ? r.video_mot[0]
+                : r.video_mot;
+            const videoUrl = videoFile
+                ? `https://gestons.girardin-tarby.fr/api/files/${r.collectionId}/${r.id}/${videoFile}`
+                : null;
+            const bonne: string = r.mot_associe;
+            const autres = noms.filter((n: string) => n !== bonne);
+            const pool = [...autres].sort(() => Math.random() - 0.5);
+            const mauvaises = pool.slice(0, 3);
+            const reponses = [bonne, ...mauvaises].sort(
+                () => Math.random() - 0.5,
+            );
+            mots.push({ id: r.id, videoUrl, reponses, bonne_reponse: bonne });
+        });
+
+        mots.sort(() => Math.random() - 0.5);
+        loadCard();
+        startTimer();
+    })();
+
+    function formatTime(s: number): string {
         const m = Math.floor(s / 60);
         const sec = s % 60;
         return `${m}:${sec.toString().padStart(2, "0")}`;
@@ -184,13 +235,14 @@ const myId = "p4";
                 timerDisplay.style.color = "var(--green)";
             }
             if (timeLeft <= 0) {
-                clearInterval(timerInterval);
+                clearInterval(timerInterval!);
                 showEnd(false);
             }
         }, 1000);
     }
 
     function loadCard() {
+        if (!mots.length) return;
         const mot = mots[index % mots.length];
         if (mot.videoUrl) {
             cardVideo.src = mot.videoUrl;
@@ -204,7 +256,6 @@ const myId = "p4";
         card.classList.remove("scale-95");
         feedback.classList.add("hidden");
         feedback.textContent = "";
-
         answersGrid.innerHTML = "";
         const reponses = [...mot.reponses].sort(() => Math.random() - 0.5);
         reponses.forEach((rep) => {
@@ -217,10 +268,9 @@ const myId = "p4";
         });
     }
 
-    function answer(choix, bonne) {
+    function answer(choix: string, bonne: string) {
         if (gameOver) return;
         const correct = choix === bonne;
-
         feedback.classList.remove("hidden");
         if (correct) {
             feedback.textContent = "✓ Bonne réponse !";
@@ -232,10 +282,10 @@ const myId = "p4";
             feedback.style.backgroundColor = "var(--pink)";
             feedback.style.color = "var(--green)";
         }
-
         card.classList.add("scale-95");
-        Array.from(answersGrid.children).forEach((b) => (b.disabled = true));
-
+        Array.from(answersGrid.children).forEach(
+            (b) => ((b as HTMLButtonElement).disabled = true),
+        );
         setTimeout(() => {
             if (!gameOver) {
                 index++;
@@ -244,23 +294,16 @@ const myId = "p4";
         }, 1000);
     }
 
-    function showEnd(fini) {
+    function showEnd(fini: boolean) {
         gameOver = true;
+        if (timerInterval) clearInterval(timerInterval);
         answersGrid.innerHTML = "";
         feedback.classList.add("hidden");
         card.style.display = "none";
-        document.getElementById("answers-grid").style.display = "none";
+        answersGrid.style.display = "none";
         endTitle.textContent = fini ? "Bravo, terminé !" : "Temps écoulé !";
         scoreDisplay.textContent = `Score : ${score} / ${mots.length}`;
         endScreen.classList.remove("hidden");
         endScreen.classList.add("flex");
     }
-
-    function startGame() {
-        loadCard();
-        startTimer();
-    }
-
-    mots.sort(() => Math.random() - 0.5);
-    startGame();
 </script>
