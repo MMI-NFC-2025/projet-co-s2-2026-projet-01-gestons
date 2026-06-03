@@ -1,16 +1,24 @@
 ---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
 import home from "../assets/icon/home.svg";
 import training from "../assets/icon/training.svg";
 import mascotte from "../assets/icon/mascotte.svg";
 import battle from "../assets/icon/battle.svg";
 import settings from "../assets/icon/settings.svg";
 
-const links = [
-    { href: "/home", label: "Home", icon: home.src },
-    { href: "/training", label: "Entrainement", icon: training.src },
-    { href: "/perso", label: "Personnalisation", icon: mascotte.src },
-    { href: "/battle", label: "Battle", icon: battle.src },
-    { href: "/account", label: "Compte", icon: settings.src },
+interface NavLink {
+    href: string;
+    label: string;
+    icon: ImageMetadata;
+}
+
+const links: NavLink[] = [
+    { href: "/home", label: "Home", icon: home },
+    { href: "/training", label: "Entrainement", icon: training },
+    { href: "/perso", label: "Personnalisation", icon: mascotte },
+    { href: "/battle", label: "Battle", icon: battle },
+    { href: "/account", label: "Compte", icon: settings },
 ];
 ---
 
@@ -50,10 +58,12 @@ const links = [
                         class="flex flex-col items-center gap-1 hover:opacity-75 transition-opacity"
                         aria-label={label}
                     >
-                        <img
+                        <Image
                             src={icon}
                             alt=""
                             aria-hidden="true"
+                            width={32}
+                            height={32}
                             class="w-8 h-8"
                         />
                         <span class="font-lato text-[10px] font-bold text-(--green)">

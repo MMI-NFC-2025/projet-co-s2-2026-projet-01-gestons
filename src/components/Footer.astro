@@ -1,22 +1,88 @@
 ---
+import { Image } from "astro:assets";
 import Facebook from "../assets/icon/facebook.svg";
 import Tiktok from "../assets/icon/tiktok.svg";
 import Insta from "../assets/icon/insta.svg";
 import Breakfooter from "../assets/icon/breakfooter.svg";
 import Point from "../assets/icon/point.svg";
+import Logo from "../assets/icon/logo_dark-green.svg";
 ---
 
 <footer class="w-full">
-    <img
-        src={Breakfooter.src}
+    <Image
+        src={Breakfooter}
         alt=""
         aria-hidden="true"
+        width={800}
+        height={20}
         class="w-full block -mb-px"
     />
 
-    <div class="bg-(--green) px-4 py-8 flex flex-col items-center gap-5">
+    <div
+        class="bg-(--green) px-4 py-8 flex flex-col items-center gap-5 lg:px-16 lg:py-10"
+    >
+        <!-- Desktop : ligne du haut — logo | nav | réseaux (masqué sur mobile) -->
+        <div
+            class="hidden lg:flex w-full items-start justify-between lg:order-1 mb-25"
+        >
+            <a href="/" aria-label="Retour en haut de la page">
+                <Image
+                    src={Logo}
+                    alt="Gestons!"
+                    width={180}
+                    height={48}
+                    class="h-12 w-auto filter-[brightness(2.72)] hover:opacity-75 transition-opacity"
+                />
+            </a>
+            <nav
+                class="flex flex-col items-center gap-2"
+                aria-label="Navigation du pied de page"
+            >
+                <a
+                    href="/about"
+                    class="text-(--light-green) font-sugo text-3xl font-medium hover:text-white transition-colors"
+                    >À propos</a
+                >
+                <a
+                    href="/contact"
+                    class="text-(--light-green) font-sugo text-3xl font-medium hover:text-white transition-colors"
+                    >Contact</a
+                >
+            </nav>
+            <div class="flex items-center gap-6">
+                <a
+                    href="https://instagram.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Instagram"
+                    class="hover:opacity-75 transition-opacity"
+                >
+                    <Image src={Insta} alt="Instagram" width={36} height={36} class="w-9 h-9" />
+                </a>
+                <a
+                    href="https://facebook.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Facebook"
+                    class="hover:opacity-75 transition-opacity"
+                >
+                    <Image src={Facebook} alt="Facebook" width={36} height={36} class="w-9 h-9" />
+                </a>
+                <a
+                    href="https://tiktok.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="TikTok"
+                    class="hover:opacity-75 transition-opacity"
+                >
+                    <Image src={Tiktok} alt="TikTok" width={32} height={36} class="w-8 h-9" />
+                </a>
+            </div>
+        </div>
+
+        <!-- Mobile : nav centré (masqué sur desktop) -->
         <nav
-            class="flex flex-col items-center gap-2 pb-4"
+            class="flex flex-col items-center gap-2 pb-4 lg:hidden"
             aria-label="Navigation du pied de page"
         >
             <a
@@ -33,7 +99,8 @@ import Point from "../assets/icon/point.svg";
             </a>
         </nav>
 
-        <div class="flex items-center gap-6 pb-3">
+        <!-- Mobile : réseaux sociaux (masqué sur desktop) -->
+        <div class="flex items-center gap-6 pb-3 lg:hidden">
             <a
                 href="https://facebook.com"
                 target="_blank"
@@ -41,13 +108,7 @@ import Point from "../assets/icon/point.svg";
                 aria-label="Facebook"
                 class="hover:opacity-75 transition-opacity"
             >
-                <img
-                    src={Facebook.src}
-                    alt="Facebook"
-                    width="36"
-                    height="36"
-                    class="w-9 h-9"
-                />
+                <Image src={Facebook} alt="Facebook" width={36} height={36} class="w-9 h-9" />
             </a>
             <a
                 href="https://instagram.com"
@@ -56,13 +117,7 @@ import Point from "../assets/icon/point.svg";
                 aria-label="Instagram"
                 class="hover:opacity-75 transition-opacity"
             >
-                <img
-                    src={Insta.src}
-                    alt="Instagram"
-                    width="36"
-                    height="36"
-                    class="w-9 h-9"
-                />
+                <Image src={Insta} alt="Instagram" width={36} height={36} class="w-9 h-9" />
             </a>
             <a
                 href="https://tiktok.com"
@@ -71,40 +126,53 @@ import Point from "../assets/icon/point.svg";
                 aria-label="TikTok"
                 class="hover:opacity-75 transition-opacity"
             >
-                <img
-                    src={Tiktok.src}
-                    alt="TikTok"
-                    width="32"
-                    height="36"
-                    class="w-8 h-9"
-                />
+                <Image src={Tiktok} alt="TikTok" width={32} height={36} class="w-8 h-9" />
             </a>
         </div>
 
-        <img
-            src={Point.src}
-            alt=""
-            aria-hidden="true"
-            class="w-full max-w-xs opacity-60"
-        />
-
+        <!-- Liens légaux -->
         <nav
-            class="flex flex-wrap justify-center gap-x-4 gap-y-1"
+            class="flex flex-wrap justify-center gap-x-4 gap-y-1 lg:justify-between lg:w-full lg:order-2"
             aria-label="Liens légaux"
         >
-            <a href="/legal" class="text-white/70 font-lato text-xs">
+            <a
+                href="/legal"
+                class="text-white/70 font-lato text-xs lg:font-sugo lg:text-xl lg:font-medium lg:text-(--light-green)"
+            >
                 Mentions Légales
             </a>
-            <a href="/cookies" class="text-white/70 font-lato text-xs">
+            <a
+                href="/cookies"
+                class="text-white/70 font-lato text-xs lg:font-sugo lg:text-xl lg:font-medium lg:text-(--light-green)"
+            >
                 Cookies
             </a>
-            <a href="/privacy-policy" class="text-white/70 font-lato text-xs">
+            <a
+                href="/privacy-policy"
+                class="text-white/70 font-lato text-xs lg:font-sugo lg:text-xl lg:font-medium lg:text-(--light-green)"
+            >
                 Politique de Confidentialité
             </a>
-            <a href="/cgu" class="text-white/70 font-lato text-xs"> CGU </a>
+            <a
+                href="/cgu"
+                class="text-white/70 font-lato text-xs lg:font-sugo lg:text-xl lg:font-medium lg:text-(--light-green)"
+            >
+                CGU
+            </a>
         </nav>
 
-        <p class="text-white/60 font-lato text-xs text-center">
+        <!-- Pointillés -->
+        <Image
+            src={Point}
+            alt=""
+            aria-hidden="true"
+            width={400}
+            height={10}
+            class="w-full max-w-xs opacity-60 lg:max-w-none lg:order-3"
+        />
+
+        <!-- Copyright -->
+        <p class="text-white/60 font-lato text-xs text-center lg:order-4">
             @2026 Gestons! Tous droit réservés
         </p>
     </div>

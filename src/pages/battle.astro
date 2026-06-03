@@ -1,14 +1,12 @@
 ---
+import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import CTAButton from "../components/CTAButton.astro";
 import mascotteImg from "../assets/img/mascotte1.avif";
 import checkIcon from "../assets/icon/check.svg";
 import mascotteIcon from "../assets/icon/mascotte.svg";
-import mascotteOnIcon from "../assets/icon/mascotte-on.svg";
 
 // TODO: remplacer par un fetch PocketBase une fois connecté
-// ex: const mots = await pb.collection('mots').getFullList()
-// ex: const participants = await pb.collection('participants').getFullList(...)
 const DUREE = 120;
 const mots = [
     {
@@ -136,18 +134,22 @@ const participants = [
                                 }
                             >
                                 {p.done ? (
-                                    <img
-                                        src={checkIcon.src}
+                                    <Image
+                                        src={checkIcon}
                                         alt=""
-                                        class="w-5 h-5"
                                         aria-hidden="true"
+                                        width={20}
+                                        height={20}
+                                        class="w-5 h-5"
                                     />
                                 ) : (
-                                    <img
-                                        src={mascotteIcon.src}
+                                    <Image
+                                        src={mascotteIcon}
                                         alt=""
-                                        class="w-6 h-6"
                                         aria-hidden="true"
+                                        width={24}
+                                        height={24}
+                                        class="w-6 h-6"
                                     />
                                 )}
                             </div>
@@ -166,9 +168,9 @@ const participants = [
                 class="w-full bg-(--light-green) rounded-3xl flex items-center justify-center overflow-hidden transition-transform duration-200"
                 style="min-height: 220px;"
             >
-                <img
+                <Image
                     id="card-image"
-                    src={mascotteImg.src}
+                    src={mascotteImg}
                     alt="Signe LSF"
                     class="h-52 w-auto object-contain"
                 />
@@ -266,7 +268,6 @@ const participants = [
 
     function loadCard() {
         const mot = mots[index % mots.length];
-        // TODO: remplacer par l'URL PocketBase → cardImage.src = mot.image
         card.classList.remove("scale-95");
         card.style.display = "";
         answersGrid.style.display = "";

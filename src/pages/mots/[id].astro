@@ -1,10 +1,11 @@
 ---
+export const prerender = true;
+
+import { Image } from "astro:assets";
 import PocketBase from "pocketbase";
 import Layout from "../../layouts/Layout.astro";
 import BackButton from "../../components/BackButton.astro";
 import mascotteImg from "../../assets/img/mascotte1.avif";
-
-const ERR = "erreur";
 
 export async function getStaticPaths() {
     const pb = new PocketBase("https://gestons.girardin-tarby.fr");
@@ -84,8 +85,8 @@ const lignes: string[] =
                         aria-label={`Vidéo du signe LSF pour : ${mot.titre}`}
                     />
                 ) : (
-                    <img
-                        src={mascotteImg.src}
+                    <Image
+                        src={mascotteImg}
                         alt={`Signe LSF pour : ${mot.titre}`}
                         class="h-52 w-auto object-contain"
                     />

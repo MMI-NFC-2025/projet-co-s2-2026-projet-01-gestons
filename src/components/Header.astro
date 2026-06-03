@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import logo from "../assets/icon/logo_dark-green.svg";
 import breakheader from "../assets/icon/breakheader.svg";
 import SearchBar from "./SearchBar.astro";
@@ -9,11 +10,11 @@ import SearchBar from "./SearchBar.astro";
         <div class="max-w-lg mx-auto flex flex-col gap-4">
             <div class="flex justify-center">
                 <a href="/home" aria-label="Accueil Gestons!">
-                    <img
-                        src={logo.src}
+                    <Image
+                        src={logo}
                         alt="Gestons!"
-                        width="220"
-                        height="45"
+                        width={220}
+                        height={45}
                         class="h-12 w-auto"
                     />
                 </a>
@@ -21,10 +22,12 @@ import SearchBar from "./SearchBar.astro";
             <SearchBar />
         </div>
     </div>
-    <img
-        src={breakheader.src}
+    <Image
+        src={breakheader}
         alt=""
         aria-hidden="true"
+        width={800}
+        height={20}
         class="w-full block -mt-px"
     />
 </header>

@@ -1,10 +1,11 @@
 ---
+export const prerender = true;
+
+import { Image } from "astro:assets";
 import PocketBase from "pocketbase";
 import Layout from "../../../layouts/Layout.astro";
-import mascotteImg from "../../../assets/img/mascotte1.avif";
 import checkIcon from "../../../assets/icon/check.svg";
 import mascotteIcon from "../../../assets/icon/mascotte.svg";
-import mascotteOnIcon from "../../../assets/icon/mascotte-on.svg";
 
 export async function getStaticPaths() {
     const pb = new PocketBase("https://gestons.girardin-tarby.fr");
@@ -47,8 +48,7 @@ export async function getStaticPaths() {
     ];
 }
 
-const { session, mots, participants, myId } = Astro.props;
-const { id } = Astro.params;
+const { session, participants } = Astro.props;
 ---
 
 <Layout title="Battle — Gestons!">
@@ -84,18 +84,22 @@ const { id } = Astro.params;
                             }
                         >
                             {p.done ? (
-                                <img
-                                    src={checkIcon.src}
+                                <Image
+                                    src={checkIcon}
                                     alt=""
-                                    class="w-5 h-5"
                                     aria-hidden="true"
+                                    width={20}
+                                    height={20}
+                                    class="w-5 h-5"
                                 />
                             ) : (
-                                <img
-                                    src={mascotteIcon.src}
+                                <Image
+                                    src={mascotteIcon}
                                     alt=""
-                                    class="w-6 h-6"
                                     aria-hidden="true"
+                                    width={24}
+                                    height={24}
+                                    class="w-6 h-6"
                                 />
                             )}
                         </div>
@@ -272,7 +276,6 @@ const { id } = Astro.params;
 
     loadCard();
     startTimer();
-}
 
 // Chargement des mots directement depuis PocketBase côté client
 (async () => {

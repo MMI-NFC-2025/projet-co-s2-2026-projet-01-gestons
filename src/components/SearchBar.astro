@@ -1,4 +1,6 @@
 ---
+import PocketBase from "pocketbase";
+import { Image } from "astro:assets";
 import loupe from "../assets/icon/loupe.svg";
 
 interface Props {
@@ -10,8 +12,6 @@ const {
     placeholder = "Rechercher un mot / une expression...",
     class: className = "",
 } = Astro.props;
-
-import PocketBase from "pocketbase";
 
 const pb = new PocketBase("https://gestons.girardin-tarby.fr");
 
@@ -46,7 +46,7 @@ try {
         class="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:opacity-75 transition-opacity"
         aria-label="Lancer la recherche"
     >
-        <img src={loupe.src} alt="" width="22" height="22" aria-hidden="true" />
+        <Image src={loupe} alt="" aria-hidden="true" width={22} height={22} />
     </button>
     <ul
         id="searchbar-suggestions"
@@ -65,7 +65,7 @@ try {
         return str
             .toLowerCase()
             .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "");
+            .replace(/[̀-ͯ]/g, "");
     }
 
     function showSuggestions(query) {
@@ -104,7 +104,6 @@ try {
         if (match) {
             window.location.href = `/mots/${match.id}`;
         } else {
-            // Prendre la première suggestion si elle existe
             const first = mots.find((m) => normalize(m.titre).includes(q));
             if (first) window.location.href = `/mots/${first.id}`;
         }

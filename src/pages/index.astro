@@ -1,9 +1,8 @@
 ---
-import LandingLayout from "../layouts/LandingLayout.astro";
+import { Image } from "astro:assets";
+import Layout from "../layouts/Layout.astro";
 import CTAButton from "../components/CTAButton.astro";
 import fusee from "../assets/icon/fusee.svg";
-import { Image } from "astro:assets";
-
 import logo from "../assets/icon/logo_dark-green.svg";
 import breakpage from "../assets/icon/breakpage.svg";
 import star from "../assets/icon/star.svg";
@@ -16,18 +15,17 @@ import training1 from "../assets/icon/training1.svg";
 import mascotte1 from "../assets/img/mascotte1.avif";
 import mascotte2 from "../assets/img/mascotte2.avif";
 import multiplayer from "../assets/icon/multiplayer.svg";
-
 import phoneHome from "../assets/img/mobilemockup1.avif";
 import phoneGame from "../assets/img/mobilemockup2.avif";
 ---
 
-<LandingLayout title="Gestons! - Apprenez la langue des signes">
+<Layout title="Gestons! - Apprenez la langue des signes" landing={true}>
     <!-- Navigation desktop uniquement -->
     <nav
         class="hidden lg:flex items-center justify-between px-16 py-5 bg-(--light-green) shadow-sm"
     >
         <a href="/home" aria-label="Accueil Gestons!">
-            <img src={logo.src} alt="Gestons!" class="h-9 w-auto" />
+            <Image src={logo} alt="Gestons!" width={180} height={37} class="h-9 w-auto" />
         </a>
         <div class="flex items-center gap-6">
             <a
@@ -44,12 +42,7 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
                 href="/inscription"
                 class="inline-flex items-center justify-center gap-2 rounded-full px-7 py-2.5 font-sugo font-bold text-lg bg-(--green) text-white hover:opacity-85 transition-opacity"
             >
-                <img
-                    src={fusee.src}
-                    alt=""
-                    aria-hidden="true"
-                    class="w-5 h-5"
-                />
+                <Image src={fusee} alt="" aria-hidden="true" width={20} height={20} class="w-5 h-5" />
                 Inscription
             </a>
         </div>
@@ -63,12 +56,14 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
         >
             <!-- Colonne gauche : logo + texte + boutons -->
             <div
-                class="relative z-30 flex flex-col items-center gap-5 lg:items-start lg:flex-1"
+                class="relative z-30 flex flex-col items-center gap-5 lg:items-start lg:flex-1 lg:pb-16"
             >
                 <a href="/home" aria-label="Accueil Gestons!" class="lg:hidden">
-                    <img
-                        src={logo.src}
+                    <Image
+                        src={logo}
                         alt="Gestons!"
+                        width={200}
+                        height={41}
                         class="h-10 w-auto mb-8"
                     />
                 </a>
@@ -93,7 +88,7 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
                         href="/inscription"
                         label="Inscription"
                         variant="primary"
-                        icon={fusee.src}
+                        icon={fusee}
                     />
                     <CTAButton
                         href="/connexion"
@@ -105,32 +100,12 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
 
             <!-- Colonne droite : mockup téléphone -->
             <div
-                class="relative w-full max-w-xs mx-auto mt-4 lg:mt-0 lg:max-w-sm lg:flex-shrink-0"
+                class="relative w-full max-w-xs mx-auto mt-4 lg:mt-0 lg:max-w-sm lg:shrink-0"
             >
-                <img
-                    src={star.src}
-                    alt=""
-                    aria-hidden="true"
-                    class="absolute top-10 -left-4 w-9 h-auto z-20"
-                />
-                <img
-                    src={star.src}
-                    alt=""
-                    aria-hidden="true"
-                    class="absolute top-2 right-0 w-5 h-auto z-20"
-                />
-                <img
-                    src={star.src}
-                    alt=""
-                    aria-hidden="true"
-                    class="absolute bottom-24 -right-4 w-7 h-auto z-20"
-                />
-                <img
-                    src={star.src}
-                    alt=""
-                    aria-hidden="true"
-                    class="absolute bottom-16 left-2 w-4 h-auto z-20"
-                />
+                <Image src={star} alt="" aria-hidden="true" width={36} height={36} class="absolute top-10 -left-4 w-9 h-auto z-20" />
+                <Image src={star} alt="" aria-hidden="true" width={20} height={20} class="absolute top-2 right-0 w-5 h-auto z-20" />
+                <Image src={star} alt="" aria-hidden="true" width={28} height={28} class="absolute bottom-24 -right-4 w-7 h-auto z-20" />
+                <Image src={star} alt="" aria-hidden="true" width={16} height={16} class="absolute bottom-16 left-2 w-4 h-auto z-20" />
                 <Image
                     src={phoneHome}
                     alt="Aperçu de l'application Gestons!"
@@ -138,19 +113,16 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
                     widths={[320, 640]}
                     sizes="(max-width: 640px) 320px, 640px"
                 />
-                <img
-                    src={rectangle.src}
-                    alt=""
-                    aria-hidden="true"
-                    class="absolute -bottom-4 left-0 right-0 w-full z-0"
-                />
+                <Image src={rectangle} alt="" aria-hidden="true" width={400} height={80} class="absolute -bottom-4 left-0 right-0 w-full z-0" />
             </div>
         </div>
-        <img
-            src={breakpage.src}
+        <Image
+            src={breakpage}
             alt=""
             aria-hidden="true"
-            class="absolute bottom-0 left-1/2 -translate-x-1/2 w-screen h-[40px] object-fill z-20 translate-y-1/2"
+            width={800}
+            height={40}
+            class="absolute bottom-0 left-1/2 -translate-x-1/2 w-screen h-10 object-fill z-20 translate-y-1/2"
         />
     </section>
 
@@ -176,12 +148,7 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
                     <div
                         class="flex items-center gap-3 rounded-2xl border border-gray-200 px-4 py-3 shadow-sm"
                     >
-                        <img
-                            src={modeIcon.src}
-                            alt=""
-                            aria-hidden="true"
-                            class="w-8 h-8 flex-shrink-0"
-                        />
+                        <Image src={modeIcon} alt="" aria-hidden="true" width={32} height={32} class="w-8 h-8 shrink-0" />
                         <span class="font-lato text-sm text-gray-800"
                             >Plusieurs modes</span
                         >
@@ -190,12 +157,7 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
                     <div
                         class="flex items-center gap-3 rounded-2xl border border-gray-200 px-4 py-3 shadow-sm"
                     >
-                        <img
-                            src={magicwand.src}
-                            alt=""
-                            aria-hidden="true"
-                            class="w-8 h-8 flex-shrink-0"
-                        />
+                        <Image src={magicwand} alt="" aria-hidden="true" width={32} height={32} class="w-8 h-8 shrink-0" />
                         <span class="font-lato text-sm text-gray-800"
                             >Facile à comprendre</span
                         >
@@ -204,12 +166,7 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
                     <div
                         class="col-span-2 lg:col-span-1 flex items-center gap-3 rounded-2xl border border-gray-200 px-4 py-3 shadow-sm w-1/2 lg:w-full mx-auto lg:mx-0"
                     >
-                        <img
-                            src={multiplayer.src}
-                            alt=""
-                            aria-hidden="true"
-                            class="w-8 h-8 flex-shrink-0"
-                        />
+                        <Image src={multiplayer} alt="" aria-hidden="true" width={32} height={32} class="w-8 h-8 shrink-0" />
                         <span class="font-lato text-sm text-gray-800"
                             >Multijoueurs</span
                         >
@@ -220,7 +177,7 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
 
         <!-- Cercle vert (gauche sur desktop) -->
         <section
-            class="bg-(--green) px-1 relative mb-16 w-[379px] h-[379px] rounded-full mx-auto lg:mb-0 lg:mx-0 lg:order-1 lg:flex-shrink-0"
+            class="bg-(--green) px-1 relative mb-16 w-[379px] h-[379px] rounded-full mx-auto lg:mb-0 lg:mx-0 lg:order-1 lg:shrink-0"
         >
             <span
                 class="absolute top-18 right-4 text-6xl text-(--pink) select-none"
@@ -260,11 +217,13 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
                 <div
                     class="flex items-center gap-4 lg:flex-col lg:items-start lg:gap-5"
                 >
-                    <img
-                        src={loupe.src}
+                    <Image
+                        src={loupe}
                         alt=""
                         aria-hidden="true"
-                        class="w-12 h-12 flex-shrink-0 mt-1 lg:w-14 lg:h-14 lg:mt-0"
+                        width={48}
+                        height={48}
+                        class="w-12 h-12 shrink-0 mt-1 lg:w-14 lg:h-14 lg:mt-0"
                     />
                     <p class="font-lato text-sm text-gray-800 leading-relaxed">
                         <span class="font-bold">Notre moteur de recherche</span> conçu
@@ -274,10 +233,12 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
                     </p>
                 </div>
 
-                <img
-                    src={mascotte1.src}
+                <Image
+                    src={mascotte1}
                     alt=""
                     aria-hidden="true"
+                    width={248}
+                    height={248}
                     class="w-62 h-auto mx-auto lg:hidden"
                 />
 
@@ -294,29 +255,35 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
                         en français signé tout en rendant l'apprentissage
                         agréable et progressif.
                     </p>
-                    <img
-                        src={training1.src}
+                    <Image
+                        src={training1}
                         alt=""
                         aria-hidden="true"
-                        class="w-12 h-auto flex-shrink-0 lg:order-1 lg:w-14"
+                        width={48}
+                        height={48}
+                        class="w-12 h-auto shrink-0 lg:order-1 lg:w-14"
                     />
                 </div>
 
-                <img
-                    src={mascotte2.src}
+                <Image
+                    src={mascotte2}
                     alt=""
                     aria-hidden="true"
+                    width={248}
+                    height={248}
                     class="w-62 h-auto mx-auto lg:hidden"
                 />
 
                 <div
                     class="flex items-center gap-4 lg:flex-col lg:items-start lg:gap-5"
                 >
-                    <img
-                        src={battle1.src}
+                    <Image
+                        src={battle1}
                         alt=""
                         aria-hidden="true"
-                        class="w-12 h-12 flex-shrink-0 mt-1 lg:w-14 lg:h-14 lg:mt-0"
+                        width={48}
+                        height={48}
+                        class="w-12 h-12 shrink-0 mt-1 lg:w-14 lg:h-14 lg:mt-0"
                     />
                     <p class="font-lato text-sm text-gray-800 leading-relaxed">
                         <strong
@@ -332,19 +299,9 @@ import phoneGame from "../assets/img/mobilemockup2.avif";
 
             <!-- Mascottes déco visibles uniquement sur desktop -->
             <div class="hidden lg:flex justify-around items-end mt-4">
-                <img
-                    src={mascotte1.src}
-                    alt=""
-                    aria-hidden="true"
-                    class="w-44 h-auto"
-                />
-                <img
-                    src={mascotte2.src}
-                    alt=""
-                    aria-hidden="true"
-                    class="w-44 h-auto"
-                />
+                <Image src={mascotte1} alt="" aria-hidden="true" width={176} height={176} class="w-44 h-auto" />
+                <Image src={mascotte2} alt="" aria-hidden="true" width={176} height={176} class="w-44 h-auto" />
             </div>
         </div>
     </section>
-</LandingLayout>
+</Layout>

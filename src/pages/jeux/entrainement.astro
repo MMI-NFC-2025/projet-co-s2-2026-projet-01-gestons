@@ -1,18 +1,17 @@
 ---
+import { Image } from "astro:assets";
 import PocketBase from "pocketbase";
 import Layout from "../../layouts/Layout.astro";
 import BackButton from "../../components/BackButton.astro";
 import arrowLeft from "../../assets/icon/arrow-left.svg";
 import arrowRight from "../../assets/icon/arrow-right.svg";
 import infoIcon from "../../assets/icon/info.svg";
-import mascotte from "../../assets/icon/mascotte.svg";
 import mascotteOn from "../../assets/icon/mascotte-on.svg";
 import mascotteImg from "../../assets/img/mascotte1.avif";
 
 const pb = new PocketBase("https://gestons.girardin-tarby.fr");
 const records = await pb.collection("mot").getFullList();
 
-// Pour chaque mot : une carte VRAI (bon mot) + une carte FAUX (mot d'un autre)
 const mots: {
     id: string;
     titre: string;
@@ -23,14 +22,12 @@ records.forEach((r, i) => {
     const videoUrl = r.video_mot
         ? `https://gestons.girardin-tarby.fr/api/files/${r.collectionId}/${r.id}/${r.video_mot}`
         : null;
-    // Carte VRAI
     mots.push({
         id: r.id + "_v",
         titre: r.mot_associe as string,
         videoUrl,
         reponse: true,
     });
-    // Carte FAUX (mot du prochain enregistrement)
     const wrongRecord = records[(i + 1) % records.length];
     mots.push({
         id: r.id + "_f",
@@ -39,7 +36,6 @@ records.forEach((r, i) => {
         reponse: false,
     });
 });
-// Mélanger pour ne pas avoir vrai/faux alternés
 mots.sort(() => Math.random() - 0.5);
 ---
 
@@ -53,10 +49,12 @@ mots.sort(() => Math.random() - 0.5);
         </div>
 
         <div class="flex flex-col items-center gap-6 py-8">
-            <img
-                src={mascotteOn.src}
+            <Image
+                src={mascotteOn}
                 alt=""
                 aria-hidden="true"
+                width={128}
+                height={128}
                 class="w-32 h-32 object-contain"
             />
             <p
@@ -99,11 +97,13 @@ mots.sort(() => Math.random() - 0.5);
             class="flex flex-col gap-4 px-5 pb-6 overflow-y-auto flex-1"
         >
             <div class="flex flex-col items-center gap-0">
-                <img
+                <Image
                     id="mascotte-top"
-                    src={mascotteOn.src}
+                    src={mascotteOn}
                     alt=""
                     aria-hidden="true"
+                    width={80}
+                    height={80}
                     class="w-20 h-20 object-contain relative z-10 -mb-6"
                 />
                 <div
@@ -120,9 +120,9 @@ mots.sort(() => Math.random() - 0.5);
                         loop
                         class="w-full max-h-60 object-contain rounded-3xl hidden"
                         aria-label="Signe LSF"></video>
-                    <img
+                    <Image
                         id="card-fallback"
-                        src={mascotteImg.src}
+                        src={mascotteImg}
                         alt="Signe LSF"
                         class="h-52 w-auto object-contain"
                     />
@@ -152,10 +152,12 @@ mots.sort(() => Math.random() - 0.5);
                     aria-label="Faux"
                     class="flex flex-col items-center gap-1 group focus:outline-none"
                 >
-                    <img
-                        src={arrowLeft.src}
+                    <Image
+                        src={arrowLeft}
                         alt=""
                         aria-hidden="true"
+                        width={80}
+                        height={80}
                         class="w-20 h-20 object-contain group-active:scale-90 transition-transform"
                     />
                     <span class="font-gill font-black text-3xl text-(--pink)"
@@ -168,10 +170,12 @@ mots.sort(() => Math.random() - 0.5);
                     aria-label="Afficher la réponse"
                     class="flex flex-col items-center focus:outline-none"
                 >
-                    <img
-                        src={infoIcon.src}
+                    <Image
+                        src={infoIcon}
                         alt=""
                         aria-hidden="true"
+                        width={112}
+                        height={112}
                         class="w-28 h-28 object-contain active:scale-90 transition-transform"
                     />
                 </button>
@@ -181,10 +185,12 @@ mots.sort(() => Math.random() - 0.5);
                     aria-label="Vrai"
                     class="flex flex-col items-center gap-1 group focus:outline-none"
                 >
-                    <img
-                        src={arrowRight.src}
+                    <Image
+                        src={arrowRight}
                         alt=""
                         aria-hidden="true"
+                        width={80}
+                        height={80}
                         class="w-20 h-20 object-contain group-active:scale-90 transition-transform"
                     />
                     <span
@@ -237,10 +243,9 @@ mots.sort(() => Math.random() - 0.5);
     </div>
 </Layout>
 
-<script>
+<script is:inline>
     let mots = [];
 
-    // Chargement des mots depuis PocketBase côté client
     (async () => {
         try {
             const res = await fetch(
@@ -252,14 +257,12 @@ mots.sort(() => Math.random() - 0.5);
                 const videoUrl = r.video_mot
                     ? `https://gestons.girardin-tarby.fr/api/files/${r.collectionId}/${r.id}/${r.video_mot}`
                     : null;
-                // Carte VRAI
                 mots.push({
                     id: r.id + "_v",
                     titre: r.mot_associe,
                     videoUrl,
                     reponse: true,
                 });
-                // Carte FAUX (mot du prochain enregistrement)
                 const wrong = records[(i + 1) % records.length];
                 mots.push({
                     id: r.id + "_f",
@@ -394,7 +397,6 @@ mots.sort(() => Math.random() - 0.5);
         loadCard();
     }
 
-    // Swipe support
     let touchStartX = 0;
     card.addEventListener(
         "touchstart",

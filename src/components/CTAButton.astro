@@ -1,10 +1,13 @@
 ---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
 interface Props {
     href: string;
     label: string;
     variant?: "primary" | "secondary" | "outline" | "white" | "custom";
     customClass?: string;
-    icon?: string;
+    icon?: ImageMetadata;
 }
 
 const {
@@ -31,6 +34,6 @@ const {
                   : customClass,
     ]}
 >
-    {icon && <img src={icon} alt="" aria-hidden="true" class="w-5 h-5" />}
+    {icon && <Image src={icon} alt="" aria-hidden="true" width={20} height={20} class="w-5 h-5" />}
     {label}
 </a>
