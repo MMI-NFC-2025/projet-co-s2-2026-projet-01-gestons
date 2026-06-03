@@ -1,10 +1,11 @@
 ---
 interface Props {
-    href: string;
+    href?: string; // ← optionnel maintenant
     label: string;
     variant?: "primary" | "secondary" | "outline" | "white" | "custom";
     customClass?: string;
     icon?: string;
+    id?: string; // ← ajouter id
 }
 
 const {
@@ -13,24 +14,38 @@ const {
     variant = "primary",
     icon,
     customClass = "",
+    id,
 } = Astro.props;
+
+const classes = [
+    "inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-2.5 font-sugo font-bold text-xl transition-all focus-visible:outline-2 focus-visible:outline-offset-2",
+    variant === "primary"
+        ? "bg-(--green) text-white hover:opacity-85 focus-visible:outline-(--green)"
+        : variant === "secondary"
+          ? "text-(--green) bg-(--pink) hover:bg-(--green) hover:text-white focus-visible:outline-(--green)"
+          : variant === "outline"
+            ? "border-2 border-white text-white bg-(--light-green) hover:opacity-85 focus-visible:outline-(--light-green) shadow-[0_0_18px_4px_var(--light-green)]"
+            : variant === "white"
+              ? "bg-(--white) text-(--light-green) hover:bg-(--light-green) hover:text-white focus-visible:outline-white border-2 border-(--light-green)"
+              : "",
+    customClass,
+];
 ---
 
-<a
-    href={href}
-    class:list={[
-        "inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-2.5 font-sugo font-bold text-xl transition-all focus-visible:outline-2 focus-visible:outline-offset-2",
-        variant === "primary"
-            ? "bg-(--green) text-white hover:opacity-85 focus-visible:outline-(--green)"
-            : variant === "secondary"
-              ? "text-(--green) bg-(--pink) hover:bg-(--green) hover:text-white focus-visible:outline-(--green)"
-              : variant === "outline"
-                ? "border-2 border-white text-white bg-(--light-green) hover:opacity-85 focus-visible:outline-(--light-green) shadow-[0_0_18px_4px_var(--light-green)]"
-                : variant === "white"
-                  ? "bg-(--white) text-(--light-green) hover:bg-(--light-green) hover:text-white focus-visible:outline-white border-2 border-(--light-green)"
-                  : customClass,
-    ]}
->
-    {icon && <img src={icon} alt="" aria-hidden="true" class="w-5 h-5" />}
-    {label}
-</a>
+{
+    href ? (
+        <a href={href} id={id} class:list={classes}>
+            {icon && (
+                <img src={icon} alt="" aria-hidden="true" class="w-5 h-5" />
+            )}
+            {label}
+        </a>
+    ) : (
+        <button id={id} type="button" class:list={classes}>
+            {icon && (
+                <img src={icon} alt="" aria-hidden="true" class="w-5 h-5" />
+            )}
+            {label}
+        </button>
+    )
+}

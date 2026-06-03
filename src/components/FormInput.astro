@@ -8,6 +8,7 @@ interface Props {
     multiline?: boolean;
     rows?: number;
     variant?: "default" | "flat";
+    readonly?: boolean;
 }
 
 const {
@@ -19,6 +20,7 @@ const {
     multiline = false,
     rows = 5,
     variant = "default",
+    readonly = false,
 } = Astro.props;
 
 const id = `field-${name}`;
@@ -50,7 +52,8 @@ const inputClass =
                 type={type}
                 placeholder={placeholder}
                 required={required}
-                class={inputClass}
+                readonly={readonly}
+                class={`${inputClass}${readonly ? " cursor-default opacity-70" : ""}`}
             />
         )
     }

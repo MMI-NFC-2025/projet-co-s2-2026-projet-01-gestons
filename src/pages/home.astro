@@ -31,6 +31,11 @@ const videoUrl = motDuJour?.video_mot
 ---
 
 <Layout title="Gestons! - Accueil">
+    <h1
+        class="text-center font-sugo font-black text-6xl text-(--green) mb-4 mt-8"
+    >
+        Bienvenue sur Gestons!
+    </h1>
     <div class="flex flex-col gap-8 py-6">
         <section class="flex flex-col items-center gap-3 w-full px-4">
             <span
@@ -172,3 +177,15 @@ const videoUrl = motDuJour?.video_mot
         </section>
     </div>
 </Layout>
+
+<script>
+    import PocketBase from "pocketbase";
+
+    const pb = new PocketBase("https://gestons.girardin-tarby.fr");
+
+    if (!pb.authStore.isValid) {
+        location.href = "/connexion";
+    }
+
+    const user = pb.authStore.model;
+</script>
