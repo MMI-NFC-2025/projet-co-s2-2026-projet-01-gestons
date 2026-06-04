@@ -66,7 +66,7 @@ import FormInput from "../components/FormInput.astro";
                 </button>
             </form>
 
-            <div id="change-password-form" class="hidden flex flex-col gap-5">
+            <div id="change-password-form" class="hidden flex-col gap-5">
                 <h2 class="font-gill font-black text-xl text-(--green)">
                     Nouveau mot de passe :
                 </h2>
@@ -114,6 +114,16 @@ import FormInput from "../components/FormInput.astro";
                 </div>
             </div>
         </div>
+
+        <hr class="border-(--light-green)" />
+
+        <button
+            id="btn-logout"
+            type="button"
+            class="w-full rounded-2xl px-4 py-3 font-sugo font-bold text-xl bg-(--pink) text-(--green) hover:opacity-85 transition-all"
+        >
+            Se déconnecter
+        </button>
     </section>
 </Layout>
 
@@ -171,6 +181,11 @@ import FormInput from "../components/FormInput.astro";
     const btnSave = document.getElementById("btn-save-password");
     const changeForm = document.getElementById("change-password-form");
     const errorDiv = document.getElementById("password-error");
+
+    document.getElementById("btn-logout")?.addEventListener("click", () => {
+        pb.authStore.clear();
+        location.href = "/connexion";
+    });
 
     btnChange?.addEventListener("click", () => {
         changeForm?.classList.remove("hidden");

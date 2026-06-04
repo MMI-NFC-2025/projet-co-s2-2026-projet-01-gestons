@@ -57,7 +57,6 @@ mots.sort(() => Math.random() - 0.5);
                 src={mascotteOn.src}
                 alt=""
                 aria-hidden="true"
-                loading="lazy"
                 class="w-32 h-32 object-contain"
             />
             <p
@@ -109,7 +108,7 @@ mots.sort(() => Math.random() - 0.5);
                 />
                 <div
                     id="card"
-                    class="w-full max-w-sm mx-auto bg-(--light-green) rounded-3xl flex items-center justify-center overflow-hidden transition-transform duration-200 leading-[0]"
+                    class="w-full max-w-sm mx-auto bg-(--light-green) rounded-3xl flex items-center justify-center overflow-hidden transition-transform duration-200 leading-0"
                 >
                     <video
                         id="card-video"
@@ -123,8 +122,7 @@ mots.sort(() => Math.random() - 0.5);
                     <img
                         id="card-fallback"
                         src={mascotteImg.src}
-                        alt="Signe LSF non disponible"
-                        loading="lazy"
+                        alt="Signe LSF"
                         class="h-52 w-auto object-contain"
                     />
                 </div>
@@ -249,7 +247,14 @@ mots.sort(() => Math.random() - 0.5);
 
     const user = pb.authStore.model;
 
-    let mots = [];
+    interface Mot {
+        id: string;
+        titre: string;
+        videoUrl: string | null;
+        reponse: boolean;
+    }
+
+    let mots: Mot[] = [];
 
     // Chargement des mots depuis PocketBase côté client
     (async () => {
@@ -281,10 +286,10 @@ mots.sort(() => Math.random() - 0.5);
         }
     })();
 
-    const lightbox = document.getElementById("game-lightbox");
-    const btnStart = document.getElementById("btn-start");
-    const btnClose = document.getElementById("btn-close");
-    const btnCloseEnd = document.getElementById("btn-close-end");
+    const lightbox = document.getElementById("game-lightbox") as HTMLElement;
+    const btnStart = document.getElementById("btn-start") as HTMLElement;
+    const btnClose = document.getElementById("btn-close") as HTMLElement;
+    const btnCloseEnd = document.getElementById("btn-close-end") as HTMLElement;
 
     function openLightbox() {
         lightbox.classList.remove("opacity-0", "pointer-events-none");
@@ -307,20 +312,24 @@ mots.sort(() => Math.random() - 0.5);
     let score = 0;
     let hintUsed = false;
 
-    const wordLabel = document.getElementById("word-label");
-    const cardVideo = document.getElementById("card-video");
-    const cardFallback = document.getElementById("card-fallback");
-    const feedback = document.getElementById("feedback");
-    const hintBanner = document.getElementById("hint-banner");
-    const endScreen = document.getElementById("end-screen");
-    const actionsRow = document.getElementById("actions-row");
-    const wordPill = document.getElementById("word-pill");
-    const btnVrai = document.getElementById("btn-vrai");
-    const btnFaux = document.getElementById("btn-faux");
-    const btnHint = document.getElementById("btn-hint");
-    const btnRestart = document.getElementById("btn-restart");
-    const card = document.getElementById("card");
-    const scoreDisplay = document.getElementById("score-display");
+    const wordLabel = document.getElementById("word-label") as HTMLElement;
+    const cardVideo = document.getElementById("card-video") as HTMLVideoElement;
+    const cardFallback = document.getElementById(
+        "card-fallback",
+    ) as HTMLElement;
+    const feedback = document.getElementById("feedback") as HTMLElement;
+    const hintBanner = document.getElementById("hint-banner") as HTMLElement;
+    const endScreen = document.getElementById("end-screen") as HTMLElement;
+    const actionsRow = document.getElementById("actions-row") as HTMLElement;
+    const wordPill = document.getElementById("word-pill") as HTMLElement;
+    const btnVrai = document.getElementById("btn-vrai") as HTMLElement;
+    const btnFaux = document.getElementById("btn-faux") as HTMLElement;
+    const btnHint = document.getElementById("btn-hint") as HTMLElement;
+    const btnRestart = document.getElementById("btn-restart") as HTMLElement;
+    const card = document.getElementById("card") as HTMLElement;
+    const scoreDisplay = document.getElementById(
+        "score-display",
+    ) as HTMLElement;
 
     function loadCard() {
         if (index >= mots.length) {
@@ -347,7 +356,7 @@ mots.sort(() => Math.random() - 0.5);
         card.classList.remove("scale-95");
     }
 
-    function answer(userReponse) {
+    function answer(userReponse: boolean) {
         const mot = mots[index];
         const correct = userReponse === mot.reponse;
 
