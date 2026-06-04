@@ -33,119 +33,101 @@ const participants = [
     { id: "p4", name: "Moi", avatar: null, score: 0, done: false },
 ];
 
-const session = { id, duree: 120 };
+const session = { id, duree: 60 };
 const myId = "p4";
 ---
 
 <Layout title="Battle — Gestons!">
-    <section
-        class="px-5 pt-6 pb-32 flex flex-col gap-6 select-none"
-        id="battle-page"
+    <div
+        id="battle-lightbox"
+        class="fixed inset-0 z-50 bg-white flex flex-col overflow-hidden"
+        aria-modal="true"
+        role="dialog"
+        aria-label="Jeu Battle"
     >
-        <h1
-            class="font-gill font-black text-5xl text-(--green) uppercase text-center"
-        >
-            BATTLE
-        </h1>
-
-        <div class="flex justify-center">
+        <!-- Header -->
+        <div class="flex items-center justify-between px-5 pt-5 pb-2 shrink-0">
+            <h1 class="font-gill font-black text-3xl text-(--green) uppercase">
+                BATTLE
+            </h1>
             <div
                 id="timer-display"
-                class="bg-(--light-green) text-white font-gill font-black text-5xl rounded-2xl px-10 py-4 tabular-nums tracking-wider"
+                class="bg-(--light-green) text-white font-gill font-black text-3xl rounded-2xl px-6 py-2 tabular-nums tracking-wider"
             >
-                2:00
+                1:00
             </div>
         </div>
 
-        <div class="flex items-center gap-3">
-            <div class="flex items-center -space-x-2">
-                {
-                    participants.map((p) => (
-                        <div
-                            class="w-10 h-10 rounded-full border-2 border-white flex items-center justify-center shrink-0"
-                            style={
-                                p.done
-                                    ? "background-color: var(--light-green)"
-                                    : "background-color: var(--pink)"
-                            }
-                        >
-                            {p.done ? (
-                                <img
-                                    src={checkIcon.src}
-                                    alt=""
-                                    class="w-5 h-5"
-                                    aria-hidden="true"
-                                />
-                            ) : (
-                                <img
-                                    src={mascotteIcon.src}
-                                    alt=""
-                                    class="w-6 h-6"
-                                    aria-hidden="true"
-                                />
-                            )}
-                        </div>
-                    ))
-                }
-            </div>
+        <!-- Countdown overlay -->
+        <div
+            id="countdown-overlay"
+            class="absolute inset-0 z-20 bg-white flex flex-col items-center justify-center gap-4"
+        >
+            <p
+                class="font-gill font-black text-xl text-(--green) uppercase tracking-widest"
+            >
+                La bataille commence dans
+            </p>
             <span
-                class="font-gill font-black text-sm text-(--green) uppercase leading-tight"
+                id="countdown-number"
+                class="font-gill font-black text-[9rem] text-(--light-green) leading-none transition-all duration-300"
+                >3</span
             >
-                Suivis des autres<br />participants
-            </span>
         </div>
 
+        <!-- Waiting screen -->
         <div
-            id="card"
-            class="w-full bg-(--light-green) rounded-3xl flex items-center justify-center overflow-hidden"
-            style="min-height: 220px;"
+            id="waiting-screen"
+            class="absolute inset-0 z-20 bg-white hidden flex-col items-center justify-center gap-6"
         >
-            <video
-                id="card-video"
-                class="w-full rounded-3xl hidden"
-                playsinline
-                muted></video>
             <p
-                id="card-fallback"
-                class="text-white font-gill font-black text-2xl hidden"
+                class="font-gill font-black text-2xl text-(--green) text-center leading-snug"
             >
-                Pas de vidéo
+                En attente du score<br />de l'adversaire…
             </p>
+            <div class="flex gap-2">
+                <span
+                    class="w-3 h-3 rounded-full bg-(--light-green) animate-bounce"
+                    style="animation-delay:0ms"></span>
+                <span
+                    class="w-3 h-3 rounded-full bg-(--light-green) animate-bounce"
+                    style="animation-delay:150ms"></span>
+                <span
+                    class="w-3 h-3 rounded-full bg-(--light-green) animate-bounce"
+                    style="animation-delay:300ms"></span>
+            </div>
         </div>
 
-        <div id="answers-grid" class="grid grid-cols-2 gap-3"></div>
-
+        <!-- Contenu scrollable -->
         <div
-            id="feedback"
-            class="hidden text-center font-gill font-black text-2xl py-3 rounded-full"
+            class="flex flex-col gap-4 px-5 pb-6 overflow-y-auto flex-1 select-none"
         >
-        </div>
+            <div
+                id="card"
+                class="mx-auto bg-(--light-green) rounded-3xl overflow-hidden leading-[0] max-w-md w-full"
+            >
+                <video
+                    id="card-video"
+                    class="w-full block rounded-3xl hidden"
+                    playsinline
+                    muted></video>
+                <p
+                    id="card-fallback"
+                    class="text-white font-gill font-black text-2xl hidden"
+                >
+                    Pas de vidéo
+                </p>
+            </div>
 
-        <div id="end-screen" class="hidden flex-col items-center gap-6 py-8">
-            <p
-                id="end-title"
-                class="font-gill font-black text-4xl text-(--green) text-center"
+            <div id="answers-grid" class="grid grid-cols-2 gap-3"></div>
+
+            <div
+                id="feedback"
+                class="hidden text-center font-gill font-black text-2xl py-3 rounded-full"
             >
-            </p>
-            <p
-                id="score-display"
-                class="font-lato text-xl font-bold text-(--light-green)"
-            >
-            </p>
-            <a
-                href="/battle"
-                class="bg-(--green) text-white font-sugo font-bold text-xl rounded-full px-8 py-3 hover:opacity-85 transition-all"
-            >
-                Retour au lobby
-            </a>
-            <a
-                href="/classement"
-                class="bg-(--light-green) text-white font-sugo font-bold text-xl rounded-full px-8 py-3 hover:opacity-85 transition-all shadow-[0_0_18px_4px_var(--light-green)]"
-            >
-                Voir le classement
-            </a>
+            </div>
         </div>
-    </section>
+    </div>
 </Layout>
 
 <script>
@@ -157,6 +139,10 @@ const myId = "p4";
         location.href = "/connexion";
     }
 
+    // Bloquer le scroll et masquer la navbar
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
     interface Mot {
         id: string;
         videoUrl: string | null;
@@ -167,7 +153,8 @@ const myId = "p4";
     let mots: Mot[] = [];
     let index = 0;
     let score = 0;
-    let timeLeft = 120;
+    let attempted = 0;
+    let timeLeft = 60;
     let timerInterval: ReturnType<typeof setInterval> | null = null;
     let gameOver = false;
 
@@ -216,6 +203,23 @@ const myId = "p4";
         });
 
         mots.sort(() => Math.random() - 0.5);
+
+        // Countdown 3s
+        const countdownOverlay = document.getElementById(
+            "countdown-overlay",
+        ) as HTMLElement;
+        const countdownNumber = document.getElementById(
+            "countdown-number",
+        ) as HTMLElement;
+        for (let i = 3; i >= 1; i--) {
+            countdownNumber.textContent = String(i);
+            countdownNumber.style.transform = "scale(1.2)";
+            await new Promise<void>((r) => setTimeout(r, 100));
+            countdownNumber.style.transform = "scale(1)";
+            await new Promise<void>((r) => setTimeout(r, 900));
+        }
+        countdownOverlay.style.display = "none";
+
         loadCard();
         startTimer();
     })();
@@ -227,8 +231,10 @@ const myId = "p4";
     }
 
     function startTimer() {
+        const startTime = Date.now();
         timerInterval = setInterval(() => {
-            timeLeft--;
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            timeLeft = Math.max(0, 60 - elapsed);
             timerDisplay.textContent = formatTime(timeLeft);
             if (timeLeft <= 10) {
                 timerDisplay.style.backgroundColor = "var(--pink)";
@@ -238,7 +244,7 @@ const myId = "p4";
                 clearInterval(timerInterval!);
                 showEnd(false);
             }
-        }, 1000);
+        }, 250);
     }
 
     function loadCard() {
@@ -270,6 +276,7 @@ const myId = "p4";
 
     function answer(choix: string, bonne: string) {
         if (gameOver) return;
+        attempted++;
         const correct = choix === bonne;
         feedback.classList.remove("hidden");
         if (correct) {
@@ -294,16 +301,94 @@ const myId = "p4";
         }, 1000);
     }
 
-    function showEnd(fini: boolean) {
+    async function resetSalon(salonId: string) {
+        try {
+            await pb.collection("battle").update(salonId, {
+                type_salon: "Disponible",
+                user1: null,
+                user2: null,
+                score_user1: 999,
+                score_user2: 999,
+            });
+        } catch (e) {
+            console.error("Erreur reset salon :", e);
+        }
+    }
+
+    async function showEnd(fini: boolean) {
         gameOver = true;
         if (timerInterval) clearInterval(timerInterval);
-        answersGrid.innerHTML = "";
-        feedback.classList.add("hidden");
-        card.style.display = "none";
-        answersGrid.style.display = "none";
-        endTitle.textContent = fini ? "Bravo, terminé !" : "Temps écoulé !";
-        scoreDisplay.textContent = `Score : ${score} / ${mots.length}`;
-        endScreen.classList.remove("hidden");
-        endScreen.classList.add("flex");
+
+        const salonId = window.location.pathname.split("/").pop();
+        if (!salonId) {
+            window.location.href = `/classement?win=false&score=${score}&opponent=0&xp=0`;
+            return;
+        }
+
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const mySlot = urlParams.get("slot") ?? "user1";
+            const myScoreField =
+                mySlot === "user1" ? "score_user1" : "score_user2";
+            const opponentScoreField =
+                mySlot === "user1" ? "score_user2" : "score_user1";
+            const isUser1 = mySlot === "user1";
+
+            // Sauvegarde mon score
+            await pb.collection("battle").update(salonId, {
+                [myScoreField]: score,
+            });
+
+            // Afficher le waiting screen
+            const waitingScreen = document.getElementById(
+                "waiting-screen",
+            ) as HTMLElement;
+            waitingScreen.classList.remove("hidden");
+            waitingScreen.classList.add("flex");
+
+            // Attend que l'adversaire ait soumis son score (poll toutes les 500ms, max 15s)
+            let opponentScore = 0;
+            let opponentSubmitted = false;
+            for (let i = 0; i < 30; i++) {
+                await new Promise<void>((r) => setTimeout(r, 500));
+                const rec = await pb.collection("battle").getOne(salonId);
+                const raw = rec[opponentScoreField];
+                if (typeof raw === "number" && raw < 999) {
+                    opponentScore = raw;
+                    opponentSubmitted = true;
+                    break;
+                }
+            }
+            // Si l'adversaire n'a pas soumis après 15s → victoire par défaut
+            const win = opponentSubmitted ? score > opponentScore : true;
+
+            // Calcul et sauvegarde de l'XP
+            const xpGained = score * 5 + (win ? 10 : 0);
+            try {
+                // Relire le record final pour avoir l'userId fiable
+                const finalRec = await pb.collection("battle").getOne(salonId);
+                const userId = finalRec[mySlot] as string;
+                const user = await pb.collection("users").getOne(userId);
+                const currentXp =
+                    typeof user["xp_earned"] === "number"
+                        ? user["xp_earned"]
+                        : 0;
+                await pb.collection("users").update(userId, {
+                    xp_earned: currentXp + xpGained,
+                });
+            } catch (xpErr) {
+                console.error("Erreur mise à jour XP :", xpErr);
+            }
+
+            // Seulement user1 remet le salon à disposition (évite double reset)
+            if (isUser1) {
+                await resetSalon(salonId);
+            }
+
+            window.location.href = `/classement?win=${win}&score=${score}&opponent=${opponentScore}&xp=${xpGained}`;
+        } catch (e) {
+            console.error("Erreur fin de partie :", e);
+            window.location.href = `/classement?win=false&score=${score}&opponent=0&xp=0`;
+        }
     }
 </script>
