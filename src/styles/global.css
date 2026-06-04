@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@layer utilities {
+    .px-safe {
+        padding-left: env(safe-area-inset-left, 0px);
+        padding-right: env(safe-area-inset-right, 0px);
+    }
+}
 
 @font-face {
     font-family: "Sugo Pro Display";
@@ -38,11 +44,13 @@
         background-color: #fafafa;
     }
 
-    h1,h2,h3 {
+    h1,
+    h2,
+    h3 {
         color: var(--green);
     }
 
-    p{
+    p {
         color: var(--green);
     }
 }
