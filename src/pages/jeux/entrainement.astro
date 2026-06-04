@@ -57,6 +57,7 @@ mots.sort(() => Math.random() - 0.5);
                 src={mascotteOn.src}
                 alt=""
                 aria-hidden="true"
+                loading="lazy"
                 class="w-32 h-32 object-contain"
             />
             <p
@@ -122,7 +123,8 @@ mots.sort(() => Math.random() - 0.5);
                     <img
                         id="card-fallback"
                         src={mascotteImg.src}
-                        alt="Signe LSF"
+                        alt="Signe LSF non disponible"
+                        loading="lazy"
                         class="h-52 w-auto object-contain"
                     />
                 </div>

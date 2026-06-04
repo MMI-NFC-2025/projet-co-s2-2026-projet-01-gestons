@@ -170,6 +170,7 @@ const participants = [
                     id="card-image"
                     src={mascotteImg.src}
                     alt="Signe LSF"
+                    loading="lazy"
                     class="h-52 w-auto object-contain"
                 />
             </div>
@@ -244,7 +245,8 @@ const participants = [
         >
             <img
                 src={mascotteImg.src}
-                alt="Mascotte"
+                alt="Mascotte en attente"
+                loading="lazy"
                 class="w-32 h-32 object-contain animate-bounce"
             />
 
@@ -416,13 +418,11 @@ const participants = [
 
             // Salon already full after joining?
             if (updated["user1"] && updated["user2"]) {
-                await pb
-                    .collection("battle")
-                    .update(salon.id, {
-                        type_salon: "Indisponible",
-                        score_user1: 999,
-                        score_user2: 999,
-                    });
+                await pb.collection("battle").update(salon.id, {
+                    type_salon: "Indisponible",
+                    score_user1: 999,
+                    score_user2: 999,
+                });
                 closeWaiting();
                 window.location.href = `/jeux/multi/${salon.id}?slot=${slot}`;
                 return;
@@ -438,13 +438,11 @@ const participants = [
                         record["user2"] &&
                         record["type_salon"] !== "Indisponible"
                     ) {
-                        await pb
-                            .collection("battle")
-                            .update(salon.id, {
-                                type_salon: "Indisponible",
-                                score_user1: 999,
-                                score_user2: 999,
-                            });
+                        await pb.collection("battle").update(salon.id, {
+                            type_salon: "Indisponible",
+                            score_user1: 999,
+                            score_user2: 999,
+                        });
                     }
                     if (record["type_salon"] === "Indisponible") {
                         if (unsubscribeFn) unsubscribeFn();

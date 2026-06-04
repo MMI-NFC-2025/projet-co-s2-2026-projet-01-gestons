@@ -394,18 +394,7 @@ const myId = "p4";
 
                 await pb.collection("users").update(userId, {
                     xp_earned: newXp,
-                    level: newNiveau,
-                    streak: newStreak,
-                    lastlogin: new Date().toISOString(),
-                });
-            } catch (xpErr) {
-                console.error("Erreur mise à jour XP :", xpErr);
-            }
-
-            // Seulement user1 remet le salon à disposition (évite double reset)
-            if (isUser1) {
-                await resetSalon(salonId);
-            }
+                    leqw>X
 
             window.location.href = `/classement?win=${win}&score=${score}&opponent=${opponentScore}&xp=${xpGained}`;
         } catch (e) {
