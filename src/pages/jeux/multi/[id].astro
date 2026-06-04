@@ -109,8 +109,11 @@ const myId = "p4";
                 <video
                     id="card-video"
                     class="w-full block rounded-3xl"
+                    autoplay
                     playsinline
-                    muted></video>
+                    muted
+                    loop
+                    preload="auto"></video>
                 <p
                     id="card-fallback"
                     class="text-white font-gill font-black text-2xl hidden"
@@ -175,24 +178,16 @@ const myId = "p4";
     const card = document.getElementById("card") as HTMLElement;
 
     (async () => {
-        const res = await fetch(
-            "https://gestons.girardin-tarby.fr/api/collections/mot/records?perPage=200",
-        );
-        const data = await res.json();
-        console.log("data:", data);
-        const records: any[] = data.items ?? [];
-        console.log("records:", records.length);
-        console.log("premier record:", records[0]);
-        const noms: string[] = records.map((r) => r.mot_associe);
+        const records = await pb
+            .collection("mot")
+            .getFullList({ fields: "id,mot_associe,video_mot,collectionId" });
+        const noms: string[] = records.map((r) => r.mot_associe as string);
 
         records.forEach((r) => {
-            const videoFile = Array.isArray(r.video_mot)
-                ? r.video_mot[0]
-                : r.video_mot;
-            const videoUrl = videoFile
-                ? `https://gestons.girardin-tarby.fr/api/files/${r.collectionId}/${r.id}/${videoFile}`
+            const videoUrl = r.video_mot
+                ? `https://gestons.girardin-tarby.fr/api/files/${r.collectionId}/${r.id}/${r.video_mot}`
                 : null;
-            const bonne: string = r.mot_associe;
+            const bonne: string = r.mot_associe as string;
             const autres = noms.filter((n: string) => n !== bonne);
             const pool = [...autres].sort(() => Math.random() - 0.5);
             const mauvaises = pool.slice(0, 3);
@@ -252,6 +247,7 @@ const myId = "p4";
         const mot = mots[index % mots.length];
         if (mot.videoUrl) {
             cardVideo.src = mot.videoUrl;
+            cardVideo.load();
             cardVideo.classList.remove("hidden");
             cardFallback.classList.add("hidden");
             cardVideo.play().catch(() => {});

@@ -332,6 +332,7 @@ mots.sort(() => Math.random() - 0.5);
         wordLabel.textContent = mot.titre;
         if (mot.videoUrl) {
             cardVideo.src = mot.videoUrl;
+            cardVideo.load();
             cardVideo.classList.remove("hidden");
             cardFallback.classList.add("hidden");
             cardVideo.play().catch(() => {});

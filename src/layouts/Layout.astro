@@ -10,7 +10,7 @@ const { title = "Gestons" } = Astro.props;
 <html lang="fr" class="overflow-x-clip">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
@@ -35,11 +35,10 @@ const { title = "Gestons" } = Astro.props;
 			sizes="16x16"
 			href="/favicon-16x16.png"
 		/>
-		<link rel="manifest" href="/site.webmanifest" />
 	</head>
 	<body class="w-full bg-white min-h-screen font-lato overflow-x-hidden">
 		<Header />
-		<main class="w-full max-w-lg mx-auto">
+		<main class="w-full max-w-lg mx-auto px-safe">
 			<slot />
 		</main>
 		<BottomNav />
