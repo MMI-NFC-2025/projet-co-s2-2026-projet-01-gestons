@@ -397,7 +397,11 @@ const myId = "p4";
                     niveau: newNiveau,
                     streak: newStreak,
                     lastlogin: today,
-            });
+                });
+            } catch (e) {
+                console.error("Erreur XP :", e);
+            }
+
             window.location.href = `/classement?win=${win}&score=${score}&opponent=${opponentScore}&xp=${xpGained}`;
         } catch (e) {
             console.error("Erreur fin de partie :", e);
