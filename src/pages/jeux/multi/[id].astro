@@ -63,8 +63,16 @@ const myId = "p4";
             id="countdown-overlay"
             class="absolute inset-0 z-20 bg-white flex flex-col items-center justify-center gap-4"
         >
-            <p class="font-gill font-black text-xl text-(--green) uppercase tracking-widest">La bataille commence dans</p>
-            <span id="countdown-number" class="font-gill font-black text-[9rem] text-(--light-green) leading-none transition-all duration-300">3</span>
+            <p
+                class="font-gill font-black text-xl text-(--green) uppercase tracking-widest"
+            >
+                La bataille commence dans
+            </p>
+            <span
+                id="countdown-number"
+                class="font-gill font-black text-[9rem] text-(--light-green) leading-none transition-all duration-300"
+                >3</span
+            >
         </div>
 
         <!-- Waiting screen -->
@@ -72,11 +80,21 @@ const myId = "p4";
             id="waiting-screen"
             class="absolute inset-0 z-20 bg-white hidden flex-col items-center justify-center gap-6"
         >
-            <p class="font-gill font-black text-2xl text-(--green) text-center leading-snug">En attente du score<br/>de l'adversaire…</p>
+            <p
+                class="font-gill font-black text-2xl text-(--green) text-center leading-snug"
+            >
+                En attente du score<br />de l'adversaire…
+            </p>
             <div class="flex gap-2">
-                <span class="w-3 h-3 rounded-full bg-(--light-green) animate-bounce" style="animation-delay:0ms"></span>
-                <span class="w-3 h-3 rounded-full bg-(--light-green) animate-bounce" style="animation-delay:150ms"></span>
-                <span class="w-3 h-3 rounded-full bg-(--light-green) animate-bounce" style="animation-delay:300ms"></span>
+                <span
+                    class="w-3 h-3 rounded-full bg-(--light-green) animate-bounce"
+                    style="animation-delay:0ms"></span>
+                <span
+                    class="w-3 h-3 rounded-full bg-(--light-green) animate-bounce"
+                    style="animation-delay:150ms"></span>
+                <span
+                    class="w-3 h-3 rounded-full bg-(--light-green) animate-bounce"
+                    style="animation-delay:300ms"></span>
             </div>
         </div>
 
@@ -187,8 +205,12 @@ const myId = "p4";
         mots.sort(() => Math.random() - 0.5);
 
         // Countdown 3s
-        const countdownOverlay = document.getElementById("countdown-overlay") as HTMLElement;
-        const countdownNumber = document.getElementById("countdown-number") as HTMLElement;
+        const countdownOverlay = document.getElementById(
+            "countdown-overlay",
+        ) as HTMLElement;
+        const countdownNumber = document.getElementById(
+            "countdown-number",
+        ) as HTMLElement;
         for (let i = 3; i >= 1; i--) {
             countdownNumber.textContent = String(i);
             countdownNumber.style.transform = "scale(1.2)";
@@ -318,7 +340,9 @@ const myId = "p4";
             });
 
             // Afficher le waiting screen
-            const waitingScreen = document.getElementById("waiting-screen") as HTMLElement;
+            const waitingScreen = document.getElementById(
+                "waiting-screen",
+            ) as HTMLElement;
             waitingScreen.classList.remove("hidden");
             waitingScreen.classList.add("flex");
 
