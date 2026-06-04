@@ -82,6 +82,12 @@ import BackButton from "../components/BackButton.astro";
             .collection("pdp")
             .getFullList({ fields: "id,pdp_img,collectionId,xp_requis" });
 
+        pdpRecords.sort((a, b) => {
+            const xpA = typeof a["xp_requis"] === "number" ? a["xp_requis"] : 0;
+            const xpB = typeof b["xp_requis"] === "number" ? b["xp_requis"] : 0;
+            return xpA - xpB;
+        });
+
         pdpRecords.forEach((r) => {
             const url = `https://gestons.girardin-tarby.fr/api/files/${r.collectionId}/${r.id}/${r.pdp_img}`;
             const isSelected = r.id === currentAvatar;
