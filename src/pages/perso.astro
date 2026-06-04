@@ -30,6 +30,9 @@ import BackButton from "../components/BackButton.astro";
             <h2 class="font-gill font-black text-2xl text-(--green)">
                 Choix de l'avatar
             </h2>
+            <p class="font-lato text-xs text-gray-500">
+                Les 4 premiers avatars sont disponibles dès le départ. Les suivants se débloquent en montant de niveau.
+            </p>
             <div id="avatar-grid" class="grid grid-cols-4 gap-3">
                 <!-- rempli dynamiquement par le script -->
             </div>
@@ -57,79 +60,92 @@ import BackButton from "../components/BackButton.astro";
     // Charger et afficher les avatars disponibles
     const grid = document.getElementById("avatar-grid") as HTMLElement;
     let currentAvatar = "";
+    let userLevel = 0;
 
     if (user) {
         try {
             const userRecord = await pb.collection("users").getOne(user.id);
             currentAvatar = (userRecord["avatar"] as string) ?? "";
+            const xp = typeof userRecord["xp_earned"] === "number" ? userRecord["xp_earned"] : 0;
+            userLevel = Math.floor(xp / 50);
         } catch {}
     }
+
+    // Les 4 premiers avatars sont libres, chaque avatar suivant se débloque à un niveau
+    // Avatar index 4 → niveau 1, index 5 → niveau 2, etc.
+    const FREE_AVATARS = 4;
 
     try {
         const pdpRecords = await pb
             .collection("pdp")
             .getFullList({ fields: "id,pdp_img,collectionId" });
-        for (const r of pdpRecords) {
+
+        pdpRecords.forEach((r, index) => {
             const url = `https://gestons.girardin-tarby.fr/api/files/${r.collectionId}/${r.id}/${r.pdp_img}`;
             const isSelected = r.id === currentAvatar;
+
+            // Calcul du verrou : les FREE_AVATARS premiers sont libres
+            const requiredLevel = index < FREE_AVATARS ? 0 : index - FREE_AVATARS + 1;
+            const isLocked = userLevel < requiredLevel;
 
             const btn = document.createElement("button");
             btn.type = "button";
             btn.dataset.avatarId = r.id;
             btn.dataset.avatarUrl = url;
-            btn.className = `avatar-btn w-full aspect-square rounded-2xl overflow-hidden border-4 transition-all focus:outline-none ${
-                isSelected
-                    ? "border-(--green)"
-                    : "border-transparent hover:border-(--light-green)"
-            }`;
-            btn.ariaLabel = "Choisir cet avatar";
-            btn.innerHTML = `<img src="${url}" alt="Avatar" loading="lazy" class="w-full h-full object-cover" />`;
-            grid.appendChild(btn);
 
-            if (isSelected) {
-                const previewImg = document.getElementById(
-                    "avatar-preview",
-                ) as HTMLImageElement | null;
-                if (previewImg) previewImg.src = url;
+            if (isLocked) {
+                btn.disabled = true;
+                btn.ariaLabel = `Avatar verrouillé — niveau ${requiredLevel} requis`;
+                btn.className = "avatar-btn w-full aspect-square rounded-2xl overflow-hidden border-4 border-transparent relative opacity-50 cursor-not-allowed";
+                btn.innerHTML = `
+                    <img src="${url}" alt="" aria-hidden="true" loading="lazy" class="w-full h-full object-cover" />
+                    <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center gap-0.5">
+                        <span class="text-2xl">🔒</span>
+                        <span class="text-white font-gill font-black text-xs">Niv. ${requiredLevel}</span>
+                    </div>`;
+            } else {
+                btn.className = `avatar-btn w-full aspect-square rounded-2xl overflow-hidden border-4 transition-all focus:outline-none ${
+                    isSelected
+                        ? "border-(--green)"
+                        : "border-transparent hover:border-(--light-green)"
+                }`;
+                btn.ariaLabel = "Choisir cet avatar";
+                btn.innerHTML = `<img src="${url}" alt="Avatar" loading="lazy" class="w-full h-full object-cover" />`;
+
+                if (isSelected) {
+                    const previewImg = document.getElementById("avatar-preview") as HTMLImageElement | null;
+                    if (previewImg) previewImg.src = url;
+                }
+
+                btn.addEventListener("click", async () => {
+                    if (!user) return;
+                    document.querySelectorAll<HTMLButtonElement>(".avatar-btn:not(:disabled)").forEach((b) => {
+                        b.className = b.className
+                            .replace("border-(--green)", "border-transparent")
+                            .replace("hover:border-(--light-green)", "") + " hover:border-(--light-green)";
+                    });
+                    btn.className = btn.className
+                        .replace("border-transparent", "border-(--green)")
+                        .replace("hover:border-(--light-green)", "");
+
+                    const previewImg = document.getElementById("avatar-preview") as HTMLImageElement | null;
+                    if (previewImg) previewImg.src = url;
+
+                    try {
+                        await pb.collection("users").update(user.id, { avatar: r.id });
+                        const msg = document.getElementById("avatar-saved-msg");
+                        if (msg) {
+                            msg.classList.remove("hidden");
+                            setTimeout(() => msg.classList.add("hidden"), 2000);
+                        }
+                    } catch (e) {
+                        console.error("Erreur sauvegarde avatar :", e);
+                    }
+                });
             }
 
-            btn.addEventListener("click", async () => {
-                if (!user) return;
-                document
-                    .querySelectorAll<HTMLButtonElement>(".avatar-btn")
-                    .forEach((b) => {
-                        b.className =
-                            b.className
-                                .replace(
-                                    "border-(--green)",
-                                    "border-transparent",
-                                )
-                                .replace("hover:border-(--light-green)", "") +
-                            " hover:border-(--light-green)";
-                    });
-                btn.className = btn.className
-                    .replace("border-transparent", "border-(--green)")
-                    .replace("hover:border-(--light-green)", "");
-
-                const previewImg = document.getElementById(
-                    "avatar-preview",
-                ) as HTMLImageElement | null;
-                if (previewImg) previewImg.src = url;
-
-                try {
-                    await pb
-                        .collection("users")
-                        .update(user.id, { avatar: r.id });
-                    const msg = document.getElementById("avatar-saved-msg");
-                    if (msg) {
-                        msg.classList.remove("hidden");
-                        setTimeout(() => msg.classList.add("hidden"), 2000);
-                    }
-                } catch (e) {
-                    console.error("Erreur sauvegarde avatar :", e);
-                }
-            });
-        }
+            grid.appendChild(btn);
+        });
     } catch (e) {
         console.error("Erreur chargement avatars :", e);
     }
