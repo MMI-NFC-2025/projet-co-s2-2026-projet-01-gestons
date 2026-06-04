@@ -50,12 +50,24 @@ const links = [
                         class="flex flex-col items-center gap-1 hover:opacity-75 transition-opacity"
                         aria-label={label}
                     >
-                        <img
-                            src={icon}
-                            alt=""
-                            aria-hidden="true"
-                            class="w-8 h-8"
-                        />
+                        {href === "/perso" ? (
+                            <span class="w-8 h-8 rounded-full overflow-hidden border-2 border-(--green) bg-white shrink-0 flex items-center justify-center">
+                                <img
+                                    id="nav-avatar-img"
+                                    src={icon}
+                                    alt=""
+                                    aria-hidden="true"
+                                    class="w-full h-full object-cover"
+                                />
+                            </span>
+                        ) : (
+                            <img
+                                src={icon}
+                                alt=""
+                                aria-hidden="true"
+                                class="w-8 h-8"
+                            />
+                        )}
                         <span class="font-lato text-[10px] font-bold text-(--green)">
                             {label}
                         </span>
@@ -67,6 +79,32 @@ const links = [
 </nav>
 
 <script>
+    import PocketBase from "pocketbase";
+
+    // Mettre à jour l'avatar dans la nav
+    const navAvatarImg = document.getElementById(
+        "nav-avatar-img",
+    ) as HTMLImageElement | null;
+    if (navAvatarImg) {
+        try {
+            const pb = new PocketBase("https://gestons.girardin-tarby.fr");
+            if (pb.authStore.isValid && pb.authStore.model) {
+                const userRecord = await pb
+                    .collection("users")
+                    .getOne(pb.authStore.model.id, { fields: "avatar" });
+                const avatarId = userRecord["avatar"] as string | undefined;
+                if (avatarId) {
+                    const avatarRec = await pb
+                        .collection("pdp")
+                        .getOne(avatarId, {
+                            fields: "id,pdp_img,collectionId",
+                        });
+                    navAvatarImg.src = `https://gestons.girardin-tarby.fr/api/files/${avatarRec.collectionId}/${avatarRec.id}/${avatarRec.pdp_img}`;
+                }
+            }
+        } catch {}
+    }
+
     const nav = document.getElementById("bottom-nav");
     const footer = document.querySelector("footer");
     if (nav && footer) {

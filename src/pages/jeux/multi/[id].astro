@@ -108,7 +108,7 @@ const myId = "p4";
             >
                 <video
                     id="card-video"
-                    class="w-full block rounded-3xl hidden"
+                    class="w-full block rounded-3xl"
                     playsinline
                     muted></video>
                 <p
@@ -305,8 +305,8 @@ const myId = "p4";
         try {
             await pb.collection("battle").update(salonId, {
                 type_salon: "Disponible",
-                user1: null,
-                user2: null,
+                user1: "",
+                user2: "",
                 score_user1: 999,
                 score_user2: 999,
             });
@@ -373,8 +373,34 @@ const myId = "p4";
                     typeof user["xp_earned"] === "number"
                         ? user["xp_earned"]
                         : 0;
+                const newXp = currentXp + xpGained;
+                const newNiveau = Math.floor(newXp / 50);
+
+                // Calcul streak
+                const today = new Date().toISOString().slice(0, 10);
+                const lastLogin: string =
+                    typeof user["lastlogin"] === "string"
+                        ? user["lastlogin"].slice(0, 10)
+                        : "";
+                const yesterday = new Date(Date.now() - 86400000)
+                    .toISOString()
+                    .slice(0, 10);
+                const currentStreak: number =
+                    typeof user["streak"] === "number" ? user["streak"] : 0;
+                let newStreak: number;
+                if (lastLogin === today) {
+                    newStreak = currentStreak; // Déjà joué aujourd'hui
+                } else if (lastLogin === yesterday) {
+                    newStreak = currentStreak + 1; // Joué hier → on continue la streak
+                } else {
+                    newStreak = 1; // 2+ jours d'absence → reset
+                }
+
                 await pb.collection("users").update(userId, {
-                    xp_earned: currentXp + xpGained,
+                    xp_earned: newXp,
+                    level: newNiveau,
+                    streak: newStreak,
+                    lastlogin: new Date().toISOString(),
                 });
             } catch (xpErr) {
                 console.error("Erreur mise à jour XP :", xpErr);

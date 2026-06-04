@@ -9,11 +9,6 @@ const { id } = Astro.params;
 const pb = new PocketBase("https://gestons.girardin-tarby.fr");
 const records = await pb.collection("mot").getFullList();
 
-const nomToId = new Map<string, string>();
-records.forEach((r) =>
-    nomToId.set((r.mot_associe as string).toLowerCase().trim(), r.id),
-);
-
 const record = records.find((r) => r.id === id);
 if (!record) return Astro.redirect("/home");
 
@@ -21,22 +16,19 @@ const videoUrl = record.video_mot
     ? `https://gestons.girardin-tarby.fr/api/files/${record.collectionId}/${record.id}/${record.video_mot}`
     : null;
 
-const motAssocie = record.mot_associe as string;
-const motAssocieId = nomToId.get(motAssocie.toLowerCase().trim()) ?? null;
+const motAssocie = record.mot_associe as string | null;
 
 const mot = {
-    titre: motAssocie || "erreur",
-    genre: (record.genre_mot as string) || "erreur",
-    instruction: (record.instruction_mot as string) || "erreur",
-    niveau: (record.niveau_mot as string) || "erreur",
+    titre: (record.mot_associe as string) || "erreur",
+    genre: (record.genre_mot as string) || "",
+    instruction: (record.instruction_mot as string) || "",
     videoUrl,
-    motAssocieId,
+    motAssocieId: motAssocie ?? null,
 };
 
-const lignes: string[] =
-    mot.instruction === "erreur"
-        ? ["erreur"]
-        : mot.instruction.split("\n").filter(Boolean);
+const lignes: string[] = mot.instruction
+    ? mot.instruction.split("\n").filter(Boolean)
+    : [];
 ---
 
 <Layout title={`${mot.titre} — Gestons!`}>
@@ -96,20 +88,9 @@ const lignes: string[] =
             }
         </div>
 
-        <!-- Niveau -->
-        <div class="flex items-center gap-3 ml-6">
-            <span class="font-lato text-sm font-bold text-(--green)"
-                >Niveau :</span
-            >
-            <span
-                class={`font-lato text-sm font-bold px-3 py-1 rounded-full${mot.niveau === "erreur" ? " bg-red-100 text-red-500 italic" : " bg-(--pink) text-(--green)"}`}
-            >
-                {mot.niveau}
-            </span>
-        </div>
         <!-- Mot associé -->
         {
-            mot.motAssocieId && mot.motAssocieId !== Astro.params.id && (
+            mot.motAssocieId && mot.motAssocieId !== id && (
                 <a
                     href={`/mots/${mot.motAssocieId}`}
                     class="font-lato text-sm underline underline-offset-4 text-(--green) inline-flex items-center gap-1 ml-6 hover:text-(--light-green) transition-colors w-fit"

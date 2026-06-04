@@ -17,12 +17,7 @@ import FormInput from "../components/FormInput.astro";
             éclair&nbsp;!
         </p>
 
-        <form
-            method="POST"
-            action="/api/contact"
-            class="flex flex-col gap-5"
-            novalidate
-        >
+        <form id="contact-form" class="flex flex-col gap-5" novalidate>
             <FormInput label="Prénom" name="prenom" required />
             <FormInput label="Nom" name="nom" required />
             <FormInput label="E-mail" name="email" type="email" required />
@@ -37,11 +32,76 @@ import FormInput from "../components/FormInput.astro";
             <div>
                 <button
                     type="submit"
+                    id="contact-submit"
                     class="bg-(--green) text-(--pink) font-sugo text-xl rounded-xl px-8 py-3 hover:opacity-85 transition-opacity focus-visible:outline-2 focus-visible:outline-(--green)"
                 >
                     Envoyer
                 </button>
             </div>
+
+            <p
+                id="contact-success"
+                class="hidden text-(--light-green) font-lato font-bold text-sm"
+            >
+                Message envoyé ! On te répond bientôt.
+            </p>
+            <p id="contact-error" class="hidden text-red-500 font-lato text-sm">
+            </p>
         </form>
     </section>
 </Layout>
+
+<script>
+    import PocketBase from "pocketbase";
+
+    const form = document.getElementById("contact-form") as HTMLFormElement;
+    const submitBtn = document.getElementById(
+        "contact-submit",
+    ) as HTMLButtonElement;
+    const successMsg = document.getElementById("contact-success")!;
+    const errorMsg = document.getElementById("contact-error")!;
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const prenom = (
+            document.getElementById("field-prenom") as HTMLInputElement
+        ).value.trim();
+        const nom = (
+            document.getElementById("field-nom") as HTMLInputElement
+        ).value.trim();
+        const mail = (
+            document.getElementById("field-email") as HTMLInputElement
+        ).value.trim();
+        const message = (
+            document.getElementById("field-message") as HTMLTextAreaElement
+        ).value.trim();
+
+        if (!prenom || !nom || !mail || !message) {
+            errorMsg.textContent = "Veuillez remplir tous les champs.";
+            errorMsg.classList.remove("hidden");
+            return;
+        }
+
+        errorMsg.classList.add("hidden");
+        submitBtn.textContent = "Envoi en cours…";
+        submitBtn.disabled = true;
+
+        try {
+            const pb = new PocketBase("https://gestons.girardin-tarby.fr");
+            await pb
+                .collection("contact")
+                .create({ prenom, nom, mail, message });
+
+            form.reset();
+            successMsg.classList.remove("hidden");
+        } catch (err: any) {
+            errorMsg.textContent =
+                "Une erreur est survenue. Réessaie plus tard.";
+            errorMsg.classList.remove("hidden");
+        } finally {
+            submitBtn.textContent = "Envoyer";
+            submitBtn.disabled = false;
+        }
+    });
+</script>
