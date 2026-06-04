@@ -24,6 +24,13 @@ import mascotte2 from "../assets/img/mascotte2.avif";
                 loading="lazy"
                 class="w-40 h-40 object-contain"
             />
+            <img
+                id="gif-victoire"
+                src=""
+                alt=""
+                aria-hidden="true"
+                class="hidden w-64 h-48 object-cover rounded-2xl"
+            />
             <div
                 class="bg-(--light-green) rounded-3xl px-10 py-6 flex flex-col gap-1 shadow-[0_0_24px_4px_var(--light-green)]"
             >
@@ -81,6 +88,13 @@ import mascotte2 from "../assets/img/mascotte2.avif";
                 loading="lazy"
                 class="w-40 h-40 object-contain opacity-80"
             />
+            <img
+                id="gif-defaite"
+                src=""
+                alt=""
+                aria-hidden="true"
+                class="hidden w-64 h-48 object-cover rounded-2xl"
+            />
             <div class="bg-(--pink) rounded-3xl px-10 py-6 flex flex-col gap-1">
                 <p
                     class="font-lato text-(--green) text-sm uppercase tracking-widest"
@@ -137,6 +151,30 @@ import mascotte2 from "../assets/img/mascotte2.avif";
     const xp = parseInt(params.get("xp") ?? "0");
     const victoire = params.get("win") === "true";
 
+    const GIPHY_KEY = "0yXpwcIjmdRL1evrSRylqI0eerxkPuNL";
+
+    async function fetchGif(
+        query: string,
+        attempt = 0,
+    ): Promise<string | null> {
+        try {
+            const res = await fetch(
+                `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_KEY}&q=${encodeURIComponent(query)}&limit=25&rating=g`,
+            );
+            if (res.status === 429 && attempt < 3) {
+                await new Promise((r) => setTimeout(r, 500 + attempt * 500));
+                return fetchGif(query, attempt + 1);
+            }
+            const data = await res.json();
+            const gifs: any[] = data.data ?? [];
+            if (!gifs.length) return null;
+            const random = gifs[Math.floor(Math.random() * gifs.length)];
+            return random.images.fixed_height.url as string;
+        } catch {
+            return null;
+        }
+    }
+
     if (victoire) {
         const screen = document.getElementById("screen-victoire")!;
         screen.classList.remove("hidden");
@@ -144,6 +182,15 @@ import mascotte2 from "../assets/img/mascotte2.avif";
         document.getElementById("score-victoire")!.textContent =
             `${score} pts vs ${opponent} pts`;
         document.getElementById("xp-victoire")!.textContent = String(xp);
+
+        const gifUrl = await fetchGif("celebration");
+        if (gifUrl) {
+            const gifEl = document.getElementById(
+                "gif-victoire",
+            ) as HTMLImageElement;
+            gifEl.src = gifUrl;
+            gifEl.classList.remove("hidden");
+        }
     } else {
         const screen = document.getElementById("screen-defaite")!;
         screen.classList.remove("hidden");
@@ -151,5 +198,14 @@ import mascotte2 from "../assets/img/mascotte2.avif";
         document.getElementById("score-defaite")!.textContent =
             `${score} pts vs ${opponent} pts`;
         document.getElementById("xp-defaite")!.textContent = String(xp);
+
+        const gifUrl = await fetchGif("sad");
+        if (gifUrl) {
+            const gifEl = document.getElementById(
+                "gif-defaite",
+            ) as HTMLImageElement;
+            gifEl.src = gifUrl;
+            gifEl.classList.remove("hidden");
+        }
     }
 </script>

@@ -402,9 +402,20 @@ const myId = "p4";
                 console.error("Erreur XP :", e);
             }
 
+            // user1 réinitialise le salon pour les deux
+            if (isUser1) {
+                await resetSalon(salonId).catch((e) =>
+                    console.error("Erreur reset salon :", e),
+                );
+            }
+
             window.location.href = `/classement?win=${win}&score=${score}&opponent=${opponentScore}&xp=${xpGained}`;
         } catch (e) {
             console.error("Erreur fin de partie :", e);
+            // Tenter quand même de libérer le salon avant de rediriger
+            const salonIdFallback = window.location.pathname.split("/").pop();
+            if (salonIdFallback)
+                await resetSalon(salonIdFallback).catch(() => {});
             window.location.href = `/classement?win=false&score=${score}&opponent=0&xp=0`;
         }
     }
