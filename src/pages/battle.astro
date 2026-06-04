@@ -107,7 +107,8 @@ const participants = [
                     Rejoindre un ami
                 </p>
                 <p class="font-lato text-xs text-gray-500 text-center">
-                    Entrez le code partagé par votre ami pour rejoindre sa partie.
+                    Entrez le code partagé par votre ami pour rejoindre sa
+                    partie.
                 </p>
                 <div class="flex gap-2 w-full max-w-xs">
                     <input
@@ -124,7 +125,11 @@ const participants = [
                         Rejoindre
                     </button>
                 </div>
-                <p id="code-error" class="hidden font-lato text-sm text-(--pink) font-bold"></p>
+                <p
+                    id="code-error"
+                    class="hidden font-lato text-sm text-(--pink) font-bold"
+                >
+                </p>
             </div>
         </div>
     </section>
@@ -289,7 +294,10 @@ const participants = [
             />
 
             <div class="text-center flex flex-col gap-1">
-                <p id="waiting-title" class="font-gill font-black text-2xl text-(--green)">
+                <p
+                    id="waiting-title"
+                    class="font-gill font-black text-2xl text-(--green)"
+                >
                     Recherche d'une partie…
                 </p>
                 <p
@@ -298,9 +306,18 @@ const participants = [
                 >
                     0 / 2 joueurs connectés
                 </p>
-                <div id="salon-code-block" class="hidden flex-col items-center gap-1 mt-2">
-                    <p class="font-lato text-xs text-gray-400">Code à partager à votre ami :</p>
-                    <p id="salon-code" class="font-gill font-black text-5xl text-(--green) tracking-widest"></p>
+                <div
+                    id="salon-code-block"
+                    class="hidden flex-col items-center gap-1 mt-2"
+                >
+                    <p class="font-lato text-xs text-gray-400">
+                        Code à partager à votre ami :
+                    </p>
+                    <p
+                        id="salon-code"
+                        class="font-gill font-black text-5xl text-(--green) tracking-widest"
+                    >
+                    </p>
                 </div>
             </div>
 
@@ -422,7 +439,8 @@ const participants = [
     async function joinBattle() {
         isPrivate = false;
         openWaiting();
-        document.getElementById("waiting-title")!.textContent = "Recherche d'une partie\u2026";
+        document.getElementById("waiting-title")!.textContent =
+            "Recherche d'une partie\u2026";
         waitingStatus.textContent = "En attente d'autres joueurs\u2026";
         waitingCount.textContent = "0 / 2 joueurs connect\u00e9s";
         document.getElementById("salon-code-block")!.classList.add("hidden");
@@ -431,11 +449,14 @@ const participants = [
         try {
             let salon: any;
             try {
-                salon = await pb.collection("battle").getFirstListItem(
-                    `type_salon = "Disponible" && (user1 = "" || user2 = "")`
-                );
+                salon = await pb
+                    .collection("battle")
+                    .getFirstListItem(
+                        `type_salon = "Disponible" && (user1 = "" || user2 = "")`,
+                    );
             } catch {
-                waitingStatus.textContent = "Aucune partie disponible pour le moment. R\u00e9essayez.";
+                waitingStatus.textContent =
+                    "Aucune partie disponible pour le moment. R\u00e9essayez.";
                 return;
             }
 
@@ -446,7 +467,8 @@ const participants = [
                   : null;
 
             if (!slot) {
-                waitingStatus.textContent = "Aucune place disponible. R\u00e9essayez.";
+                waitingStatus.textContent =
+                    "Aucune place disponible. R\u00e9essayez.";
                 return;
             }
 
@@ -504,7 +526,8 @@ const participants = [
     async function hostPrivateBattle() {
         isPrivate = true;
         openWaiting();
-        document.getElementById("waiting-title")!.textContent = "Partie priv\u00e9e";
+        document.getElementById("waiting-title")!.textContent =
+            "Partie priv\u00e9e";
         waitingStatus.textContent = "En attente de votre ami\u2026";
         waitingCount.textContent = "0 / 2 joueurs connect\u00e9s";
         document.getElementById("salon-code-block")!.classList.add("hidden");
@@ -513,11 +536,14 @@ const participants = [
         try {
             let salon: any;
             try {
-                salon = await pb.collection("battle").getFirstListItem(
-                    `type_salon = "Disponible" && user1 = "" && user2 = ""`
-                );
+                salon = await pb
+                    .collection("battle")
+                    .getFirstListItem(
+                        `type_salon = "Disponible" && user1 = "" && user2 = ""`,
+                    );
             } catch {
-                waitingStatus.textContent = "Aucun salon disponible. R\u00e9essayez.";
+                waitingStatus.textContent =
+                    "Aucun salon disponible. R\u00e9essayez.";
                 isPrivate = false;
                 closeWaiting();
                 return;
@@ -542,22 +568,28 @@ const participants = [
             }
             updateWaitingUI(updated);
 
-            const unsubscribe = await pb.collection("battle").subscribe(salon.id, async (e) => {
-                const record = e.record;
-                updateWaitingUI(record);
-                if (record["user1"] && record["user2"] && record["type_salon"] !== "Indisponible") {
-                    await pb.collection("battle").update(salon.id, {
-                        type_salon: "Indisponible",
-                        score_user1: 999,
-                        score_user2: 999,
-                    });
-                }
-                if (record["type_salon"] === "Indisponible") {
-                    if (unsubscribeFn) unsubscribeFn();
-                    closeWaiting();
-                    window.location.href = `/jeux/multi/${salon.id}?slot=user1`;
-                }
-            });
+            const unsubscribe = await pb
+                .collection("battle")
+                .subscribe(salon.id, async (e) => {
+                    const record = e.record;
+                    updateWaitingUI(record);
+                    if (
+                        record["user1"] &&
+                        record["user2"] &&
+                        record["type_salon"] !== "Indisponible"
+                    ) {
+                        await pb.collection("battle").update(salon.id, {
+                            type_salon: "Indisponible",
+                            score_user1: 999,
+                            score_user2: 999,
+                        });
+                    }
+                    if (record["type_salon"] === "Indisponible") {
+                        if (unsubscribeFn) unsubscribeFn();
+                        closeWaiting();
+                        window.location.href = `/jeux/multi/${salon.id}?slot=user1`;
+                    }
+                });
             unsubscribeFn = unsubscribe;
         } catch (err) {
             console.error("Erreur cr\u00e9ation partie priv\u00e9e :", err);
@@ -579,7 +611,9 @@ const participants = [
                     updateData["user1"] = "";
                     updateData["user2"] = "";
                 }
-                await pb.collection("battle").update(currentSalonId, updateData);
+                await pb
+                    .collection("battle")
+                    .update(currentSalonId, updateData);
             } catch (e) {
                 console.error("Erreur annulation :", e);
             }
@@ -592,7 +626,9 @@ const participants = [
 
     btnStart.addEventListener("click", joinBattle);
     btnCancelWait.addEventListener("click", cancelBattle);
-    document.getElementById("btn-host-private")!.addEventListener("click", hostPrivateBattle);
+    document
+        .getElementById("btn-host-private")!
+        .addEventListener("click", hostPrivateBattle);
 
     // --- Rejoindre par code ---
     const btnJoinCode = document.getElementById("btn-join-code")!;
@@ -613,11 +649,14 @@ const participants = [
         try {
             let salon: any;
             try {
-                salon = await pb.collection("battle").getFirstListItem(
-                    `code_salon = ${code} && type_salon = "Priv\u00e9" && user2 = ""`
-                );
+                salon = await pb
+                    .collection("battle")
+                    .getFirstListItem(
+                        `code_salon = ${code} && type_salon = "Priv\u00e9" && user2 = ""`,
+                    );
             } catch {
-                codeError.textContent = "Code introuvable ou partie déjà pleine.";
+                codeError.textContent =
+                    "Code introuvable ou partie déjà pleine.";
                 codeError.classList.remove("hidden");
                 btnJoinCode.textContent = "Rejoindre";
                 btnJoinCode.removeAttribute("disabled");
@@ -630,7 +669,9 @@ const participants = [
 
             openWaiting();
             waitingStatus.textContent = "Connexion en cours\u2026";
-            document.getElementById("salon-code-block")!.classList.add("hidden");
+            document
+                .getElementById("salon-code-block")!
+                .classList.add("hidden");
 
             const updated = await pb.collection("battle").update(salon.id, {
                 [slot]: pb.authStore.model!.id,
@@ -648,22 +689,28 @@ const participants = [
                 return;
             }
 
-            const unsubscribe = await pb.collection("battle").subscribe(salon.id, async (e) => {
-                const record = e.record;
-                updateWaitingUI(record);
-                if (record["user1"] && record["user2"] && record["type_salon"] !== "Indisponible") {
-                    await pb.collection("battle").update(salon.id, {
-                        type_salon: "Indisponible",
-                        score_user1: 999,
-                        score_user2: 999,
-                    });
-                }
-                if (record["type_salon"] === "Indisponible") {
-                    if (unsubscribeFn) unsubscribeFn();
-                    closeWaiting();
-                    window.location.href = `/jeux/multi/${salon.id}?slot=${slot}`;
-                }
-            });
+            const unsubscribe = await pb
+                .collection("battle")
+                .subscribe(salon.id, async (e) => {
+                    const record = e.record;
+                    updateWaitingUI(record);
+                    if (
+                        record["user1"] &&
+                        record["user2"] &&
+                        record["type_salon"] !== "Indisponible"
+                    ) {
+                        await pb.collection("battle").update(salon.id, {
+                            type_salon: "Indisponible",
+                            score_user1: 999,
+                            score_user2: 999,
+                        });
+                    }
+                    if (record["type_salon"] === "Indisponible") {
+                        if (unsubscribeFn) unsubscribeFn();
+                        closeWaiting();
+                        window.location.href = `/jeux/multi/${salon.id}?slot=${slot}`;
+                    }
+                });
             unsubscribeFn = unsubscribe;
         } catch (err) {
             console.error("Erreur rejoindre par code :", err);
