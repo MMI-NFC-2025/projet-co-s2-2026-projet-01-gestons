@@ -252,11 +252,9 @@ mots.sort(() => Math.random() - 0.5);
     // Chargement des mots depuis PocketBase côté client
     (async () => {
         try {
-            const records = await pb
-                .collection("mot")
-                .getFullList({
-                    fields: "id,mot_associe,video_mot,collectionId",
-                });
+            const records = await pb.collection("mot").getFullList({
+                fields: "id,mot_associe,video_mot,collectionId",
+            });
             records.forEach((r, i) => {
                 const videoUrl = r.video_mot
                     ? `https://gestons.girardin-tarby.fr/api/files/${r.collectionId}/${r.id}/${r.video_mot}`
