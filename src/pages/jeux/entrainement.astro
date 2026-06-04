@@ -108,8 +108,7 @@ mots.sort(() => Math.random() - 0.5);
                 />
                 <div
                     id="card"
-                    class="w-full bg-(--light-green) rounded-3xl flex items-center justify-center overflow-hidden transition-transform duration-200"
-                    style="min-height: 240px;"
+                    class="w-full max-w-sm mx-auto bg-(--light-green) rounded-3xl flex items-center justify-center overflow-hidden transition-transform duration-200 leading-[0]"
                 >
                     <video
                         id="card-video"
@@ -118,7 +117,7 @@ mots.sort(() => Math.random() - 0.5);
                         playsinline
                         muted
                         loop
-                        class="w-full max-h-60 object-contain rounded-3xl hidden"
+                        class="w-full object-contain rounded-3xl hidden"
                         aria-label="Signe LSF"></video>
                     <img
                         id="card-fallback"
@@ -253,23 +252,21 @@ mots.sort(() => Math.random() - 0.5);
     // Chargement des mots depuis PocketBase côté client
     (async () => {
         try {
-            const res = await fetch(
-                "https://gestons.girardin-tarby.fr/api/collections/mot/records?perPage=200",
-            );
-            const data = await res.json();
-            const records = data.items ?? [];
+            const records = await pb
+                .collection("mot")
+                .getFullList({
+                    fields: "id,mot_associe,video_mot,collectionId",
+                });
             records.forEach((r, i) => {
                 const videoUrl = r.video_mot
                     ? `https://gestons.girardin-tarby.fr/api/files/${r.collectionId}/${r.id}/${r.video_mot}`
                     : null;
-                // Carte VRAI
                 mots.push({
                     id: r.id + "_v",
                     titre: r.mot_associe,
                     videoUrl,
                     reponse: true,
                 });
-                // Carte FAUX (mot du prochain enregistrement)
                 const wrong = records[(i + 1) % records.length];
                 mots.push({
                     id: r.id + "_f",

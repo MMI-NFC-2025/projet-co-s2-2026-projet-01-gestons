@@ -1,18 +1,28 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import BackButton from "../components/BackButton.astro";
-import AvatarLink from "../components/AvatarLink.astro";
 import FormInput from "../components/FormInput.astro";
 ---
 
 <Layout title="Mon Compte — Gestons!">
     <section class="px-5 pt-6 pb-32 flex flex-col gap-8">
         <div class="flex items-start justify-between">
-            <AvatarLink
+            <a
                 href="/perso"
-                color="var(--light-green)"
-                alt="Modifier l'avatar"
-            />
+                aria-label="Modifier l'avatar"
+                class="relative inline-block w-24 h-24 shrink-0"
+            >
+                <div
+                    class="w-full h-full rounded-full border-4 border-(--light-green) overflow-hidden bg-gray-100 flex items-center justify-center"
+                >
+                    <img
+                        id="account-avatar-img"
+                        src=""
+                        alt="Avatar"
+                        class="w-full h-full object-cover"
+                    />
+                </div>
+            </a>
             <BackButton href="/" label="<- Retour" />
         </div>
 
@@ -117,6 +127,26 @@ import FormInput from "../components/FormInput.astro";
     }
 
     const user = pb.authStore.model;
+
+    // Charger l'avatar
+    if (user) {
+        try {
+            const userRecord = await pb
+                .collection("users")
+                .getOne(user.id, { fields: "avatar" });
+            const avatarId = userRecord["avatar"] as string | undefined;
+            if (avatarId) {
+                const avatarRec = await pb
+                    .collection("pdp")
+                    .getOne(avatarId, { fields: "id,pdp_img,collectionId" });
+                const avatarUrl = `https://gestons.girardin-tarby.fr/api/files/${avatarRec.collectionId}/${avatarRec.id}/${avatarRec.pdp_img}`;
+                const img = document.getElementById(
+                    "account-avatar-img",
+                ) as HTMLImageElement | null;
+                if (img) img.src = avatarUrl;
+            }
+        } catch {}
+    }
 
     if (user) {
         const usernameInput = document.getElementById(

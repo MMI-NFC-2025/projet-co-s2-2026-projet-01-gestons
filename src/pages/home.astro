@@ -6,15 +6,14 @@ import gameImage2 from "../assets/img/img-home2.avif";
 import PocketBase from "pocketbase";
 
 const streakDays = 5;
-const level = 4;
-const starsProgress = 3;
-const totalStars = 5;
 
 // Mot du jour : aléatoire mais stable toute la journée (seed = date)
 const pb = new PocketBase("https://gestons.girardin-tarby.fr");
 const records = await pb
     .collection("mot")
     .getFullList({ fields: "id,mot_associe,video_mot,collectionId" });
+
+records.sort((a, b) => a.id.localeCompare(b.id));
 
 const today = new Date();
 const seed =
@@ -44,40 +43,53 @@ const videoUrl = motDuJour?.video_mot
                 aria-label="Flamme de série">🔥</span
             >
             <p class="text-center text-lg font-bold font-lato">
-                Série de <span class="text-(--light-green)">{streakDays}</span> jours
-                !!!
+                Série de <span id="streak-count" class="text-(--light-green)"
+                    >—</span
+                > jours !!!
             </p>
             <p class="text-center font-lato text-base text-gray-700">
                 Continuez comme ça !
             </p>
             <div
+                id="stars-bar"
                 class="flex items-center justify-around w-full max-w-xs rounded-full bg-(--green) px-6 py-3 border-(--pink) border-4"
                 role="progressbar"
-                aria-label={`${starsProgress} étoile${starsProgress > 1 ? "s" : ""} sur ${totalStars}`}
-                aria-valuenow={starsProgress}
+                aria-label="0 étoile sur 5"
+                aria-valuenow={0}
                 aria-valuemin={0}
-                aria-valuemax={totalStars}
+                aria-valuemax={5}
             >
-                {
-                    Array.from({ length: totalStars }, (_, i) => (
-                        <span
-                            class:list={[
-                                "text-3xl leading-none select-none",
-                                i < starsProgress
-                                    ? "text-white"
-                                    : "text-white/25",
-                            ]}
-                            aria-hidden="true"
-                        >
-                            ★
-                        </span>
-                    ))
-                }
+                <span
+                    id="star-0"
+                    class="text-3xl leading-none select-none text-white/25"
+                    aria-hidden="true">★</span
+                >
+                <span
+                    id="star-1"
+                    class="text-3xl leading-none select-none text-white/25"
+                    aria-hidden="true">★</span
+                >
+                <span
+                    id="star-2"
+                    class="text-3xl leading-none select-none text-white/25"
+                    aria-hidden="true">★</span
+                >
+                <span
+                    id="star-3"
+                    class="text-3xl leading-none select-none text-white/25"
+                    aria-hidden="true">★</span
+                >
+                <span
+                    id="star-4"
+                    class="text-3xl leading-none select-none text-white/25"
+                    aria-hidden="true">★</span
+                >
             </div>
             <p
+                id="level-text"
                 class="text-center text-(--light-green) font-bold font-lato text-base"
             >
-                Niveau {level} !!!
+                Niveau — !!!
             </p>
         </section>
 
@@ -188,4 +200,45 @@ const videoUrl = motDuJour?.video_mot
     }
 
     const user = pb.authStore.model;
+
+    if (user) {
+        try {
+            const userRecord = await pb.collection("users").getOne(user.id);
+            const xp =
+                typeof userRecord["xp_earned"] === "number"
+                    ? userRecord["xp_earned"]
+                    : 0;
+            const niveau = Math.floor(xp / 50);
+            const starsProgress = Math.floor((xp % 50) / 10);
+
+            const levelText = document.getElementById("level-text");
+            if (levelText) levelText.textContent = `Niveau ${niveau} !!!`;
+
+            const streakEl = document.getElementById("streak-count");
+            if (streakEl)
+                streakEl.textContent = String(
+                    typeof userRecord["streak"] === "number"
+                        ? userRecord["streak"]
+                        : 0,
+                );
+
+            const starsBar = document.getElementById("stars-bar");
+            if (starsBar) {
+                starsBar.setAttribute("aria-valuenow", String(starsProgress));
+                starsBar.setAttribute(
+                    "aria-label",
+                    `${starsProgress} étoile${starsProgress > 1 ? "s" : ""} sur 5`,
+                );
+            }
+
+            for (let i = 0; i < 5; i++) {
+                const star = document.getElementById(`star-${i}`);
+                if (star) {
+                    star.className = `text-3xl leading-none select-none ${i < starsProgress ? "text-white" : "text-white/25"}`;
+                }
+            }
+        } catch (e) {
+            console.error("Erreur chargement niveau :", e);
+        }
+    }
 </script>

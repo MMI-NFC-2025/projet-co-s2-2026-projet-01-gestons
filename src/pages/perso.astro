@@ -1,30 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import BackButton from "../components/BackButton.astro";
-import AvatarLink from "../components/AvatarLink.astro";
-import ColorRow from "../components/ColorRow.astro";
-import hatSvg from "../assets/icon/hat.svg";
-import bonnetSvg from "../assets/icon/bonnet.svg";
-import glassesSvg from "../assets/icon/glasses.svg";
-
-// TODO: remplacer par un fetch PocketBase une fois connecté
-// ex: const colors = await pb.collection('colors').getFullList()
-const COLORS = ["#e53e3e", "#3b4fd8", "#22c55e", "#c026d3"];
-
-const ACCESSORIES = [
-    { label: "Chapeau haut-de-forme", value: "hat-top", icon: hatSvg.src },
-    { label: "Bonnet", value: "hat-red", icon: bonnetSvg.src },
-    { label: "Lunettes", value: "glasses", icon: glassesSvg.src },
-];
-
-// TODO: charger depuis PocketBase — user.avatarColor, user.borderColor, etc.
-const user = {
-    avatarColor: "var(--light-green)",
-    fond: COLORS[0],
-    contour: COLORS[0],
-    mascotte: COLORS[0],
-    accessory: "",
-};
 ---
 
 <Layout title="Personnalisation — Gestons!">
@@ -36,87 +12,34 @@ const user = {
                 Personnalisation
             </h1>
             <div class="flex justify-between items-start mt-4">
-                <div class="flex justify-center">
-                    <AvatarLink
-                        href="/personalisation"
-                        color={user.avatarColor}
+                <div
+                    class="w-20 h-20 rounded-full border-4 border-(--light-green) overflow-hidden bg-gray-100 shrink-0"
+                >
+                    <img
+                        id="avatar-preview"
+                        src=""
                         alt="Aperçu de l'avatar"
+                        class="w-full h-full object-cover"
                     />
                 </div>
                 <BackButton href="/account" label="<- Retour" />
             </div>
         </div>
 
-        <form
-            method="POST"
-            action="/api/personalisation"
-            class="flex flex-col gap-6"
-        >
+        <div class="flex flex-col gap-3">
             <h2 class="font-gill font-black text-2xl text-(--green)">
-                Choix couleur
+                Choix de l'avatar
             </h2>
-
-            <ColorRow
-                label="Fond"
-                name="fond"
-                colors={COLORS}
-                selected={user.fond}
-            />
-            <ColorRow
-                label="Contour"
-                name="contour"
-                colors={COLORS}
-                selected={user.contour}
-            />
-            <ColorRow
-                label="Mascotte"
-                name="mascotte"
-                colors={COLORS}
-                selected={user.mascotte}
-            />
-
-            <div class="flex flex-col gap-2 mt-2">
-                <h2 class="font-gill font-black text-2xl text-(--green)">
-                    Accessoires
-                </h2>
-                <div class="flex items-center gap-4 flex-wrap">
-                    {
-                        ACCESSORIES.map((acc) => (
-                            <label class="cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name="accessory"
-                                    value={acc.value}
-                                    checked={user.accessory === acc.value}
-                                    class="sr-only peer"
-                                />
-                                <span class="w-14 h-14 rounded-full border-2 border-(--light-green) bg-gray-100 flex items-center justify-center peer-checked:border-(--green) peer-checked:bg-(--light-green)/20 transition-all">
-                                    <img
-                                        src={acc.icon}
-                                        alt={acc.label}
-                                        class="w-8 h-8 object-contain"
-                                    />
-                                </span>
-                            </label>
-                        ))
-                    }
-                    <button
-                        type="button"
-                        aria-label="Ajouter un accessoire"
-                        class="w-14 h-14 rounded-full border-2 border-(--green) text-(--green) text-2xl font-bold flex items-center justify-center hover:bg-(--green) hover:text-white transition-all"
-                    >
-                        +
-                    </button>
-                </div>
+            <div id="avatar-grid" class="grid grid-cols-4 gap-3">
+                <!-- rempli dynamiquement par le script -->
             </div>
-
-            <button
-                type="submit"
-                class="mt-4 bg-(--green) text-white font-sugo font-bold text-xl rounded-full px-6 py-2.5 hover:opacity-85 transition-all"
+            <p
+                id="avatar-saved-msg"
+                class="hidden text-(--light-green) font-lato font-bold text-sm"
             >
-                Sauvegarder
-            </button>
-        </form>
+                Avatar sauvegardé !
+            </p>
+        </div>
     </section>
 </Layout>
 
@@ -130,4 +53,84 @@ const user = {
     }
 
     const user = pb.authStore.model;
+
+    // Charger et afficher les avatars disponibles
+    const grid = document.getElementById("avatar-grid") as HTMLElement;
+    let currentAvatar = "";
+
+    if (user) {
+        try {
+            const userRecord = await pb.collection("users").getOne(user.id);
+            currentAvatar = (userRecord["avatar"] as string) ?? "";
+        } catch {}
+    }
+
+    try {
+        const pdpRecords = await pb
+            .collection("pdp")
+            .getFullList({ fields: "id,pdp_img,collectionId" });
+        for (const r of pdpRecords) {
+            const url = `https://gestons.girardin-tarby.fr/api/files/${r.collectionId}/${r.id}/${r.pdp_img}`;
+            const isSelected = r.id === currentAvatar;
+
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.dataset.avatarId = r.id;
+            btn.dataset.avatarUrl = url;
+            btn.className = `avatar-btn w-full aspect-square rounded-2xl overflow-hidden border-4 transition-all focus:outline-none ${
+                isSelected
+                    ? "border-(--green)"
+                    : "border-transparent hover:border-(--light-green)"
+            }`;
+            btn.ariaLabel = "Choisir cet avatar";
+            btn.innerHTML = `<img src="${url}" alt="Avatar" class="w-full h-full object-cover" />`;
+            grid.appendChild(btn);
+
+            if (isSelected) {
+                const previewImg = document.getElementById(
+                    "avatar-preview",
+                ) as HTMLImageElement | null;
+                if (previewImg) previewImg.src = url;
+            }
+
+            btn.addEventListener("click", async () => {
+                if (!user) return;
+                document
+                    .querySelectorAll<HTMLButtonElement>(".avatar-btn")
+                    .forEach((b) => {
+                        b.className =
+                            b.className
+                                .replace(
+                                    "border-(--green)",
+                                    "border-transparent",
+                                )
+                                .replace("hover:border-(--light-green)", "") +
+                            " hover:border-(--light-green)";
+                    });
+                btn.className = btn.className
+                    .replace("border-transparent", "border-(--green)")
+                    .replace("hover:border-(--light-green)", "");
+
+                const previewImg = document.getElementById(
+                    "avatar-preview",
+                ) as HTMLImageElement | null;
+                if (previewImg) previewImg.src = url;
+
+                try {
+                    await pb
+                        .collection("users")
+                        .update(user.id, { avatar: r.id });
+                    const msg = document.getElementById("avatar-saved-msg");
+                    if (msg) {
+                        msg.classList.remove("hidden");
+                        setTimeout(() => msg.classList.add("hidden"), 2000);
+                    }
+                } catch (e) {
+                    console.error("Erreur sauvegarde avatar :", e);
+                }
+            });
+        }
+    } catch (e) {
+        console.error("Erreur chargement avatars :", e);
+    }
 </script>
