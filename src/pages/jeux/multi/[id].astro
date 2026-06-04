@@ -104,7 +104,7 @@ const myId = "p4";
         >
             <div
                 id="card"
-                class="mx-auto bg-(--light-green) rounded-3xl overflow-hidden leading-[0] max-w-md w-full"
+                class="mx-auto bg-(--light-green) rounded-3xl overflow-hidden leading-0 max-w-md w-full"
             >
                 <video
                     id="card-video"
@@ -394,8 +394,10 @@ const myId = "p4";
 
                 await pb.collection("users").update(userId, {
                     xp_earned: newXp,
-                    leqw>X
-
+                    niveau: newNiveau,
+                    streak: newStreak,
+                    lastlogin: today,
+            });
             window.location.href = `/classement?win=${win}&score=${score}&opponent=${opponentScore}&xp=${xpGained}`;
         } catch (e) {
             console.error("Erreur fin de partie :", e);
