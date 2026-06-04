@@ -110,17 +110,16 @@ const participants = [
                     Entrez le code partagé par votre ami pour rejoindre sa
                     partie.
                 </p>
-                <div class="flex gap-2 w-full max-w-xs">
+                <div class="flex flex-col gap-2 w-full max-w-xs">
                     <input
                         id="code-input"
                         type="number"
-                        placeholder="Code à 4 chiffres"
-                        maxlength="4"
-                        class="flex-1 rounded-2xl border-2 border-(--light-green) px-4 py-2.5 font-gill font-black text-2xl text-center text-(--green) tracking-widest focus:outline-none focus:border-(--green)"
+                        placeholder="Code à 6 chiffres"
+                        class="w-full rounded-2xl border-2 border-(--light-green) px-4 py-2.5 font-gill font-black text-2xl text-center text-(--green) tracking-widest focus:outline-none focus:border-(--green)"
                     />
                     <button
                         id="btn-join-code"
-                        class="rounded-2xl px-4 py-2.5 font-sugo font-bold text-lg bg-(--green) text-white hover:opacity-85 transition-all"
+                        class="w-full rounded-2xl px-4 py-2.5 font-sugo font-bold text-lg bg-(--green) text-white hover:opacity-85 transition-all"
                     >
                         Rejoindre
                     </button>
