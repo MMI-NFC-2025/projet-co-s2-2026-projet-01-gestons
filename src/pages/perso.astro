@@ -83,7 +83,7 @@ import BackButton from "../components/BackButton.astro";
                     : "border-transparent hover:border-(--light-green)"
             }`;
             btn.ariaLabel = "Choisir cet avatar";
-            btn.innerHTML = `<img src="${url}" alt="Avatar" class="w-full h-full object-cover" />`;
+            btn.innerHTML = `<img src="${url}" alt="Avatar" loading="lazy" class="w-full h-full object-cover" />`;
             grid.appendChild(btn);
 
             if (isSelected) {
